@@ -1,0 +1,56 @@
+# Variables
+@username = {{username}}
+@password = {{password}}
+@token = {{token}}
+
+### 1. Obtener la lista de todos los trabajos de investigación
+GET http://127.0.0.1:8000/api/trabajos/
+
+### 2. Obtener un Token de Autenticación
+POST http://127.0.0.1:8000/api/api-token-auth/
+Content-Type: application/json
+
+{
+    "username": "{{username}}",
+    "password": "{{password}}"
+}
+
+### 3. Aprobar una solicitud de préstamo (necesita token)
+PATCH http://127.0.0.1:8000/api/solicitudes/1/aprobar/
+Authorization: Token {{token}}
+
+### 4. Crear un nuevo Trabajo de Investigación (¡VERSIÓN COMPLETA!)
+POST http://127.0.0.1:8000/api/trabajos/
+Authorization: Token {{token}}
+Content-Type: multipart/form-data; boundary=----WebKitFormBoundary7MA4YWxkTrZu0gW
+
+------WebKitFormBoundary7MA4YWxkTrZu0gW
+Content-Disposition: form-data; name="titulo"
+
+PROYECTO DE INVERSIÓN...
+------WebKitFormBoundary7MA4YWxkTrZu0gW
+Content-Disposition: form-data; name="resumen"
+
+Establecer un centro de capacitación...
+------WebKitFormBoundary7MA4YWxkTrZu0gW
+Content-Disposition: form-data; name="fecha_publicacion"
+
+2025-07-07
+------WebKitFormBoundary7MA4YWxkTrZu0gW
+Content-Disposition: form-data; name="tipo_material"
+
+tesis
+------WebKitFormBoundary7MA4YWxkTrZu0gW
+Content-Disposition: form-data; name="archivo_ruta"; filename="Documento Final del Proyecto.pdf"
+Content-Type: application/pdf
+
+< ./Documento Final del Proyecto.pdf
+------WebKitFormBoundary7MA4YWxkTrZu0gW
+Content-Disposition: form-data; name="autores_ids"
+
+1
+------WebKitFormBoundary7MA4YWxkTrZu0gW
+Content-Disposition: form-data; name="palabras_clave_ids"
+
+1
+------WebKitFormBoundary7MA4YWxkTrZu0gW--

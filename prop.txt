@@ -1,0 +1,11 @@
+> git push -u origin version-reducida
+Enumerating objects: 526, done.
+Counting objects: 100% (526/526), done.
+Delta compression using up to 8 threads
+Compressing objects: 100% (512/512), done.
+error: RPC failed; curl 55 Send failure: Connection was reset
+send-pack: unexpected disconnect while reading sideband packet
+Writing objects: 100% (526/526), 2.88 GiB | 7.67 MiB/s, done.
+Total 526 (delta 151), reused 0 (delta 0), pack-reused 0 (from 0)
+fatal: the remote end hung up unexpectedly
+Everything up-to-date

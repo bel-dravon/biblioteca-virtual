@@ -1,0 +1,37 @@
+Vamos a separar la lógica de nuestra base de datos creando un nuevo modelo exclusivo para Libros Físicos, totalmente independiente del sistema RAG de Inteligencia Artificial que usamos para las Tesis.
+
+Por favor, realiza los siguientes pasos en el backend:
+
+1. Modelo (en biblioteca/models.py):
+Crea el modelo Libro con estos campos:
+
+titulo: CharField(max_length=255)
+
+autor: CharField(max_length=255)
+
+isbn: CharField(max_length=20, unique=True, null=True, blank=True)
+
+editorial: CharField(max_length=100, null=True, blank=True)
+
+anio_publicacion: PositiveIntegerField(null=True, blank=True)
+
+numero_edicion: PositiveSmallIntegerField(default=1)
+
+stock: PositiveIntegerField(default=1) # Para control de inventario físico
+
+ubicacion_fisica: CharField(max_length=100, help_text="Ej: Estante A-3, Fila 2")
+
+palabras_clave: ManyToManyField al modelo de etiquetas existente (ej: PalabraClave), blank=True. Esto será la base de la búsqueda avanzada.
+
+portada: ImageField(upload_to='portadas_libros/', null=True, blank=True)
+
+2. Admin (en biblioteca/admin.py):
+Registra el modelo Libro. Configura un ModelAdmin con list_display (titulo, autor, stock, ubicacion_fisica), search_fields (titulo, autor, isbn) y list_filter (anio_publicacion, editorial). Usa filter_horizontal para palabras_clave si aplica.
+
+3. API (en biblioteca/serializers.py y views.py):
+Crea un LibroSerializer y un LibroViewSet (idealmente un ReadOnlyModelViewSet con filtros por palabras clave y título) para que el frontend pueda consultarlo. Agrega la ruta correspondiente en el urls.py de la API.
+
+4. Migraciones:
+Finalmente, ejecuta los comandos necesarios en la terminal para crear y aplicar las migraciones a la base de datos de PostgreSQL.
+
+Avísame cuando hayas terminado y proporcióname la URL del nuevo endpoint de la API para libros.

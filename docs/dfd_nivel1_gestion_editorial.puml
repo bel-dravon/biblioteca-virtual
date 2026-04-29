@@ -1,0 +1,92 @@
+@startuml
+' DFD Nivel 1 - Subsistema de Gestion e Inteligencia Editorial
+
+left to right direction
+skinparam shadowing false
+skinparam packageStyle rectangle
+skinparam rectangle {
+  BackgroundColor #FFFDF7
+  BorderColor #6B7280
+  FontColor #111827
+}
+skinparam database {
+  BackgroundColor #F8FAFC
+  BorderColor #64748B
+  FontColor #0F172A
+}
+skinparam actor {
+  FontColor #111827
+}
+skinparam cloud {
+  BackgroundColor #EEF6FF
+  BorderColor #3B82F6
+}
+skinparam note {
+  BackgroundColor #F8FAFC
+  BorderColor #94A3B8
+}
+
+title DFD Nivel 1 - Subsistema de Gestion e Inteligencia Editorial
+
+actor Bibliotecario
+
+rectangle "P1 Gestion del catalogo\ny carga de trabajos" as P1
+rectangle "P5 Analitica y apoyo editorial" as P5
+rectangle "P9 Analisis de tendencias\ny validacion de originalidad" as P9
+rectangle "P0 Indexacion semantica\nproceso en segundo plano" as P0
+
+database "D1 Catalogo academico" as D1
+database "D2 Repositorio PDF" as D2
+database "D3 Indice vectorial\nThesisEmbedding" as D3
+
+cloud "Gemini API" as Gemini
+
+Bibliotecario --> P1 : alta, edicion y carga\nde trabajos academicos
+P1 --> D1 : guardar metadatos\ndel trabajo
+P1 --> D2 : almacenar PDF
+
+D1 --> P0 : titulo, resumen, contenido
+D2 --> P0 : texto fuente o PDF
+P0 --> Gemini : solicitud de embedding
+Gemini --> P0 : vector semantico
+P0 --> D3 : guardar embedding,\nindexed_text y metadata
+
+Bibliotecario --> P5 : solicitud de analitica\ny validacion editorial
+P5 --> P9 : requerimiento de analisis
+P9 --> D1 : lectura del corpus academico
+D1 --> P9 : trabajos y metadatos
+P9 --> D3 : consulta de embeddings
+D3 --> P9 : representaciones semanticas
+P9 --> P5 : tendencias, clusters\no similitudes
+P5 --> Bibliotecario : apoyo para decision editorial
+
+P5 --> D1 : consulta de trabajos\npara revision
+D1 --> P5 : informacion catalografica
+
+note bottom of P0
+  Representa la alimentacion del indice vectorial.
+  En el proyecto se observa en procesos de ingesta
+  como `import_legacy_thesis.py` y en el uso de
+  `embed_text()` del cliente Gemini.
+end note
+
+note right of P9
+  Agrupa la logica de `TrendAnalyticsView`,
+  `generate_trend_analysis()` y
+  `verificar_originalidad()`.
+end note
+
+legend right
+  Diagrama de Nivel 1 enfocado en el bibliotecario.
+
+  Procesos incluidos:
+  - gestion del catalogo
+  - analitica editorial
+  - indexacion semantica
+
+  Almacenes alimentados:
+  - D1 Catalogo academico
+  - D3 Indice vectorial
+endlegend
+
+@enduml

@@ -1,0 +1,11 @@
+Por favor, corrige el comportamiento del enlace/navegación:
+
+Revisa la URL del botón: Asegúrate de que el botón 'Ver Detalles' en TrabajoCard apunte a la ruta limpia (ej. /trabajos/${id}) sin ningún hash (#chat o similar) ni parámetros de estado que fuercen el scroll.
+
+Fuerza el Scroll hacia arriba (Top 0): En el componente de la vista de detalles (TrabajoDetalle o similar), agrega un useEffect básico que fuerce a la ventana a empezar desde arriba al cargar la página.
+Ejemplo:
+useEffect(() => { window.scrollTo(0, 0); }, [id]);
+
+Elimina cualquier función tipo scrollIntoView() que haya quedado huérfana y que se esté ejecutando al montar el componente de detalles.
+
+Confírmame cuando esté corregido para verificar que al entrar a los detalles, la vista comience desde la parte superior (título y portada)."
