@@ -18,10 +18,8 @@ import ArrowBackIcon from '@mui/icons-material/ArrowBack';
 import NavigateNextIcon from '@mui/icons-material/NavigateNext';
 import PersonIcon from '@mui/icons-material/Person';
 import { Link as MuiLink } from '@mui/material';
-import { historialService, solicitudesService, trabajosService } from '../../api';
+import { historialService, trabajosService } from '../../api';
 import { useAuth } from '../../context/AuthContext';
-import LoanRequestModal from '../../components/LoanRequestModal';
-import LoanStatusNotification from '../../components/LoanStatusNotification';
 import { borderRadius, colors, shadows } from '../../theme/themeConfig';
 import PDFSection from './PDFSection';
 import LoanSection from './LoanSection';
@@ -33,15 +31,10 @@ export default function TrabajoDetalle() {
   const [work, setWork] = useState(null);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
-  const [existingRequest, setExistingRequest] = useState(null);
-  const [loanModalOpen, setLoanModalOpen] = useState(false);
-  const [notification, setNotification] = useState({ open: false, status: 'success', message: '' });
   const [verPdf, setVerPdf] = useState(false);
 
   const esExterno = user?.username === 'estudiante_externo';
-  const permisoPorSolicitud =
-    existingRequest?.estado === 'aprobado' && existingRequest?.tipo_solicitud === 'descarga';
-  const tienePermisoDigital = (isAuthenticated && !esExterno) || permisoPorSolicitud;
+  const tienePermisoDigital = isAuthenticated && !esExterno;
 
   useEffect(() => {
     window.scrollTo(0, 0);
@@ -61,23 +54,8 @@ export default function TrabajoDetalle() {
 
       setWork(workData);
 
-      if (isAuthenticated) {
-        if (tienePermisoDigital) {
-          historialService.registrarVisualizacion(id).catch(() => null);
-        }
-
-        try {
-          const misSolicitudes = await solicitudesService.getAll();
-          const lista = Array.isArray(misSolicitudes) ? misSolicitudes : misSolicitudes.results || [];
-          const solicitudEncontrada = lista.find((solicitud) => {
-            const trabajoIdEnSolicitud = solicitud.trabajo_detalle?.id || solicitud.trabajo;
-            return trabajoIdEnSolicitud === parseInt(id, 10);
-          });
-
-          setExistingRequest(solicitudEncontrada || null);
-        } catch (solicitudesError) {
-          console.error('Error verificando solicitudes', solicitudesError);
-        }
+      if (isAuthenticated && tienePermisoDigital) {
+        historialService.registrarVisualizacion(id).catch(() => null);
       }
     } catch (requestError) {
       setError(requestError.message || 'Error al cargar datos');
@@ -86,33 +64,8 @@ export default function TrabajoDetalle() {
     }
   }, [id, isAuthenticated, tienePermisoDigital]);
 
-  const handleLoanSubmit = useCallback(async (loanData) => {
-    if (!work?.id) return;
-
-    try {
-      await solicitudesService.create({
-        trabajo: work.id,
-        tipo_solicitud: loanData.loanType === 'fisico' ? 'prestamo' : 'descarga',
-      });
-
-      setNotification({ open: true, status: 'success', message: 'Solicitud enviada exitosamente.' });
-      fetchData();
-    } catch (requestError) {
-      let errorMsg = 'Error al solicitar.';
-      if (requestError.status === 401) errorMsg = 'Tu sesion ha expirado.';
-      else if (requestError.errors?.detail) errorMsg = requestError.errors.detail;
-
-      setNotification({ open: true, status: 'rejected', message: errorMsg });
-    }
-  }, [work?.id, fetchData]);
-
   const handleOpenPdf = useCallback(() => setVerPdf(true), []);
   const handleClosePdf = useCallback(() => setVerPdf(false), []);
-  const handleOpenLoanModal = useCallback(() => setLoanModalOpen(true), []);
-  const handleCloseLoanModal = useCallback(() => setLoanModalOpen(false), []);
-  const handleCloseNotification = useCallback(() => {
-    setNotification((prev) => ({ ...prev, open: false }));
-  }, []);
 
   if (loading) {
     return (
@@ -284,32 +237,14 @@ export default function TrabajoDetalle() {
             <Grid item xs={12} md={4}>
               <LoanSection
                 isAuthenticated={isAuthenticated}
-                existingRequest={existingRequest}
                 tienePermisoDigital={tienePermisoDigital}
                 hasPdf={Boolean(work.archivo_ruta)}
                 onOpenPdf={handleOpenPdf}
-                onOpenLoanModal={handleOpenLoanModal}
-                onNotify={setNotification}
               />
             </Grid>
           </Grid>
         </Collapse>
 
-        {loanModalOpen && (
-          <LoanRequestModal
-            open={loanModalOpen}
-            onClose={handleCloseLoanModal}
-            book={work}
-            onSubmit={handleLoanSubmit}
-          />
-        )}
-
-        <LoanStatusNotification
-          open={notification.open}
-          status={notification.status}
-          message={notification.message}
-          onClose={handleCloseNotification}
-        />
       </Container>
     </Box>
   );

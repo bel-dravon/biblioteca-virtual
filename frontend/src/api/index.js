@@ -3,7 +3,6 @@ export { API_URL, default as apiClient } from './config';
 export { authService } from './auth';
 export { trabajosService } from './trabajos';
 export { convocatoriasService } from './convocatorias';
-export { solicitudesService } from './solicitudes';
 export { estadisticasService } from './estadisticas';
 export { usersService } from './users';
 export { rolesService } from './roles';

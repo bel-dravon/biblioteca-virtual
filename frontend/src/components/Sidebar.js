@@ -9,7 +9,6 @@ import ExploreIcon from '@mui/icons-material/Explore';
 import MenuBookIcon from '@mui/icons-material/MenuBook';
 import FolderIcon from '@mui/icons-material/Folder';
 import CampaignIcon from '@mui/icons-material/Campaign';
-import DashboardIcon from '@mui/icons-material/Dashboard';
 import MenuIcon from '@mui/icons-material/Menu';
 import CloseIcon from '@mui/icons-material/Close';
 import LogoutIcon from '@mui/icons-material/Logout';
@@ -65,7 +64,6 @@ export default function Sidebar({
   if (esAdministrador) {
     menuItems.push({ divider: true, label: 'Administración' });
     menuItems.push({ text: 'Gestión Usuarios', icon: <PeopleIcon />, path: '/admin/usuarios' });
-    menuItems.push({ text: 'Gestión Préstamos', icon: <DashboardIcon />, path: '/admin/dashboard' });
     menuItems.push({ text: 'Gestión de Acervo', icon: <UploadFileIcon />, path: '/admin/trabajos' });
     menuItems.push({ text: 'Gestión Convocatorias', icon: <AddCircleIcon />, path: '/admin/convocatorias' });
     menuItems.push({ divider: true, label: 'Catálogos' });

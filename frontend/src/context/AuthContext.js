@@ -41,7 +41,6 @@ export const AuthProvider = ({ children }) => {
                         puede_gestionar_usuarios: perfil.rol?.puede_gestionar_usuarios || false,
                         puede_eliminar_contenido: perfil.rol?.puede_eliminar_contenido || false,
                         puede_ver_estadisticas: perfil.rol?.puede_ver_estadisticas || false,
-                        puede_aprobar_prestamos: perfil.rol?.puede_aprobar_prestamos || false,
                     }
                 };
             }
