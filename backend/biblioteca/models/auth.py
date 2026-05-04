@@ -21,7 +21,6 @@ class Rol(models.Model):
     puede_gestionar_usuarios = models.BooleanField(default=False)
     puede_eliminar_contenido = models.BooleanField(default=False)
     puede_ver_estadisticas = models.BooleanField(default=True)
-    puede_aprobar_prestamos = models.BooleanField(default=False)
 
     class Meta:
         verbose_name = 'Rol'
@@ -43,7 +42,6 @@ class Rol(models.Model):
                 'puede_gestionar_usuarios': True,
                 'puede_eliminar_contenido': True,
                 'puede_ver_estadisticas': True,
-                'puede_aprobar_prestamos': True,
             }
         )
         roles['administrador'] = administrador
@@ -55,7 +53,6 @@ class Rol(models.Model):
                 'puede_gestionar_usuarios': False,
                 'puede_eliminar_contenido': False,
                 'puede_ver_estadisticas': False,
-                'puede_aprobar_prestamos': False,
             }
         )
         roles['estudiante'] = estudiante
@@ -67,7 +64,6 @@ class Rol(models.Model):
                 'puede_gestionar_usuarios': False,
                 'puede_eliminar_contenido': False,
                 'puede_ver_estadisticas': False,
-                'puede_aprobar_prestamos': False,
             }
         )
         roles['usuario'] = usuario

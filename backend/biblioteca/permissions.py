@@ -42,13 +42,6 @@ class CanManageUsers(BaseRolePermission):
         return self._is_administrador(request.user)
 
 
-class CanManageLoans(BaseRolePermission):
-    message = 'No tiene permisos para gestionar préstamos.'
-
-    def has_permission(self, request, view):
-        return self._is_administrador(request.user)
-
-
 class IsOwnerOrAdmin(BaseRolePermission):
     message = 'Solo puede acceder a sus propios recursos.'
 

@@ -3,7 +3,6 @@ from .perfiles import PerfilViewSet
 from .palabras_clave import PalabraClaveViewSet
 from .libros import LibroViewSet
 from .trabajos import TrabajoInvestigacionViewSet
-from .solicitudes import SolicitudPrestamoViewSet
 from .historial import HistorialVisualizacionViewSet
 from .convocatorias import ConvocatoriaViewSet
 from .users import UserViewSet
@@ -16,7 +15,6 @@ __all__ = [
     'PalabraClaveViewSet',
     'LibroViewSet',
     'TrabajoInvestigacionViewSet',
-    'SolicitudPrestamoViewSet',
     'HistorialVisualizacionViewSet',
     'ConvocatoriaViewSet',
     'UserViewSet',

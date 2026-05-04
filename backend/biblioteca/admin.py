@@ -1,13 +1,12 @@
 from django.contrib import admin
 from .models import (
     Rol, Perfil, PalabraClave, Libro, TrabajoInvestigacion,
-    SolicitudPrestamo, HistorialVisualizacion
+    HistorialVisualizacion
 )
 
 admin.site.register(Rol)
 admin.site.register(Perfil)
 admin.site.register(PalabraClave)
-admin.site.register(SolicitudPrestamo)
 admin.site.register(HistorialVisualizacion)
 
 @admin.register(TrabajoInvestigacion)

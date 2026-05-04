@@ -5,7 +5,6 @@ from .palabras_clave import PalabraClaveSerializer
 from .libros import LibroSerializer
 from .convocatorias import ConvocatoriaSerializer
 from .trabajos import TrabajoInvestigacionSerializer
-from .solicitudes import SolicitudPrestamoSerializer
 from .historial import HistorialVisualizacionSerializer
 
 __all__ = [
@@ -16,6 +15,5 @@ __all__ = [
     'LibroSerializer',
     'ConvocatoriaSerializer',
     'TrabajoInvestigacionSerializer',
-    'SolicitudPrestamoSerializer',
     'HistorialVisualizacionSerializer',
 ]

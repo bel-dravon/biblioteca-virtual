@@ -22,7 +22,6 @@ def create_user_profile(sender, instance, created, **kwargs):
             'puede_gestionar_usuarios': False,
             'puede_eliminar_contenido': False,
             'puede_ver_estadisticas': False,
-            'puede_aprobar_prestamos': False,
         },
     )
 

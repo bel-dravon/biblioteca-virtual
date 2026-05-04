@@ -3,7 +3,7 @@ from rest_framework.routers import DefaultRouter
 from rest_framework.authtoken import views as authtoken_views
 from .views import (
     RolViewSet, PerfilViewSet, PalabraClaveViewSet, LibroViewSet, TrabajoInvestigacionViewSet,
-    SolicitudPrestamoViewSet, HistorialVisualizacionViewSet, ConvocatoriaViewSet, UserViewSet, estadisticas_tendencias, trabajos_por_mes
+    HistorialVisualizacionViewSet, ConvocatoriaViewSet, UserViewSet, estadisticas_tendencias, trabajos_por_mes
 )
 
 router = DefaultRouter()
@@ -12,7 +12,6 @@ router.register(r'perfiles', PerfilViewSet)
 router.register(r'palabras-clave', PalabraClaveViewSet)
 router.register(r'libros', LibroViewSet, basename='libro')
 router.register(r'trabajos', TrabajoInvestigacionViewSet, basename='trabajo')
-router.register(r'solicitudes', SolicitudPrestamoViewSet)
 router.register(r'historial', HistorialVisualizacionViewSet)
 router.register(r'convocatorias', ConvocatoriaViewSet)
 router.register(r'users', UserViewSet)
