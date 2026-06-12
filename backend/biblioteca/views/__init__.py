@@ -7,7 +7,12 @@ from .historial import HistorialVisualizacionViewSet
 from .convocatorias import ConvocatoriaViewSet
 from .users import UserViewSet
 from .estadisticas import estadisticas_tendencias, trabajos_por_mes
-from .pdf import serve_pdf
+""" from .pdf import serve_pdf_preview """
+from .contribuciones import (
+    DocumentoAporteViewSet,
+    CreditoDescargaViewSet,
+    AccesoExternoViewSet,
+)
 
 __all__ = [
     'RolViewSet',
@@ -20,5 +25,5 @@ __all__ = [
     'UserViewSet',
     'estadisticas_tendencias',
     'trabajos_por_mes',
-    'serve_pdf',
+    'serve_pdf_preview',
 ]

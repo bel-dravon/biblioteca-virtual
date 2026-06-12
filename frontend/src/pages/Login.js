@@ -46,7 +46,7 @@ export default function Login() {
           {error && <Alert severity="error" sx={{ mb: 2 }}>{error}</Alert>}
 
           <Box component="form" onSubmit={handleSubmit} noValidate aria-label="Formulario de inicio de sesion">
-            <TextField margin="normal" required fullWidth label="Nombre de Usuario" autoFocus value={username} onChange={(e) => setUsername(e.target.value)} />
+            <TextField margin="normal" required fullWidth label="Nombre" autoFocus value={username} onChange={(e) => setUsername(e.target.value)} />
             <TextField margin="normal" required fullWidth label="Contraseña" type="password" value={password} onChange={(e) => setPassword(e.target.value)} />
 
             <Button type="submit" fullWidth variant="contained" sx={{ mt: 3, mb: 2, py: 1.5 }} disabled={loading} >

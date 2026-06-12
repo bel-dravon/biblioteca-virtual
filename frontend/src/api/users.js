@@ -21,3 +21,4 @@ export const usersService = {
     return await apiClient.delete(`/users/${id}/`);
   },
 };
+

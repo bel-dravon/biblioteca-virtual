@@ -8,12 +8,10 @@ class Rol(models.Model):
 
     ADMINISTRADOR = 'Administrador'
     ESTUDIANTE = 'Estudiante'
-    USUARIO = 'Usuario'
 
     ROLES_PREDEFINIDOS = [
         (ADMINISTRADOR, 'Administracion integral del sistema'),
         (ESTUDIANTE, 'Acceso basico a la biblioteca y solicitudes propias'),
-        (USUARIO, 'Acceso basico de lectura y consultas propias'),
     ]
 
     nombre = models.CharField(max_length=50, unique=True)
@@ -56,17 +54,6 @@ class Rol(models.Model):
             }
         )
         roles['estudiante'] = estudiante
-
-        usuario, _ = cls.objects.get_or_create(
-            nombre=cls.USUARIO,
-            defaults={
-                'descripcion': 'Acceso basico de lectura y consultas propias',
-                'puede_gestionar_usuarios': False,
-                'puede_eliminar_contenido': False,
-                'puede_ver_estadisticas': False,
-            }
-        )
-        roles['usuario'] = usuario
 
         return roles
 

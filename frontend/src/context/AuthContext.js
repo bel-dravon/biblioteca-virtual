@@ -29,6 +29,14 @@ export const AuthProvider = ({ children }) => {
             // El endpoint de perfiles filtra por usuario actual
             if (perfiles.length > 0) {
                 const perfil = perfiles[0];
+                let creditos = 0;
+                try {
+                    const creditosRes = await apiClient.get('/creditos/mis_creditos/');
+                    creditos = creditosRes.creditos || 0;
+                } catch (e) {
+                    console.warn('No se pudieron cargar créditos:', e);
+                }
+
                 return {
                     username: perfil.usuario?.username || username,
                     id: perfil.usuario?.id,
@@ -37,6 +45,7 @@ export const AuthProvider = ({ children }) => {
                     last_name: perfil.usuario?.last_name,
                     rol: perfil.rol?.nombre || null,
                     rol_id: perfil.rol?.id,
+                    creditos: creditos, 
                     permisos: {
                         puede_gestionar_usuarios: perfil.rol?.puede_gestionar_usuarios || false,
                         puede_eliminar_contenido: perfil.rol?.puede_eliminar_contenido || false,

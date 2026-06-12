@@ -4,13 +4,13 @@ import logging
 
 from rest_framework import viewsets, status
 from rest_framework.decorators import action
-from rest_framework.permissions import IsAuthenticatedOrReadOnly
+from rest_framework.permissions import IsAuthenticated, IsAuthenticatedOrReadOnly, AllowAny
 from rest_framework.response import Response
 from rest_framework.parsers import MultiPartParser, FormParser, JSONParser
 from django.db import transaction
 from django.db.models import Q
 
-from biblioteca.models import TrabajoInvestigacion
+from biblioteca.models import TrabajoInvestigacion, CreditoDescarga, AccesoExterno
 from biblioteca.serializers import TrabajoInvestigacionSerializer
 from biblioteca.serializers.trabajos import TrabajoInvestigacionUploadSerializer
 from biblioteca.permissions import (
@@ -25,8 +25,8 @@ logger = logging.getLogger(__name__)
 
 class TrabajoInvestigacionViewSet(viewsets.ModelViewSet):
     """ViewSet principal para trabajos de investigación."""
-
-    queryset = TrabajoInvestigacion.objects.prefetch_related('palabras_clave')
+    queryset = TrabajoInvestigacion.objects.all()
+    """ queryset = TrabajoInvestigacion.objects.prefetch_related('palabras_clave') """
     serializer_class = TrabajoInvestigacionSerializer
     parser_classes = [MultiPartParser, FormParser, JSONParser]
 
@@ -36,8 +36,8 @@ class TrabajoInvestigacionViewSet(viewsets.ModelViewSet):
         return TrabajoInvestigacionSerializer
 
     def get_permissions(self):
-        if self.action == 'destroy':
-            return [CanManageUsers(), CanDeleteContent()]
+        if self.action in ['list', 'retrieve']:
+            return [AllowAny()]
         if self.action in ['create', 'update', 'partial_update', 'subir_trabajo']:
             return [CanManageUsers()]
         return [IsAuthenticatedOrReadOnly()]
@@ -144,3 +144,48 @@ class TrabajoInvestigacionViewSet(viewsets.ModelViewSet):
             raise ValueError(f'El campo {field_name} debe enviarse como una lista JSON.')
 
         return parsed_value
+    
+    @action(detail=True, methods=['get'], permission_classes=[AllowAny])
+    def puede_descargar(self, request, pk=None):
+        """
+        Verifica si el usuario (autenticado o por token) puede descargar este trabajo.
+        """
+        trabajo = self.get_object()
+        user = request.user
+        
+        # Usuario interno autenticado
+        if user.is_authenticated:
+            tiene_credito = CreditoDescarga.objects.filter(
+                usuario=user, usado=False
+            ).exists()
+            return Response({
+                'puede_descargar': tiene_credito,
+                'es_interno': True,
+                'creditos_disponibles': CreditoDescarga.objects.filter(
+                    usuario=user, usado=False
+                ).count()
+            })
+    
+        # Usuario externo (por token en query param)
+        token = request.query_params.get('token')
+        if token:
+            tiene_credito = CreditoDescarga.objects.filter(
+                token_acceso=token, usado=False
+            ).exists()
+            tiene_acceso_completo = AccesoExterno.objects.filter(
+                token_acceso=token, trabajo=trabajo
+            ).exists()
+            return Response({
+                'puede_descargar': tiene_credito,
+                'puede_ver_completo': tiene_acceso_completo,
+                'es_interno': False,
+                'token': token
+            })
+        
+        # Sin token, sin login: no puede descargar
+        return Response({
+            'puede_descargar': False,
+            'puede_ver_completo': False,
+            'es_interno': False,
+            'mensaje': 'Regístrate o aporta un documento para descargar'
+        })

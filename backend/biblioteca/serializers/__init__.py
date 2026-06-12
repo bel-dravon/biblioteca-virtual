@@ -6,7 +6,11 @@ from .libros import LibroSerializer
 from .convocatorias import ConvocatoriaSerializer
 from .trabajos import TrabajoInvestigacionSerializer
 from .historial import HistorialVisualizacionSerializer
-
+from .contribuciones import (
+    DocumentoAporteSerializer,
+    CreditoDescargaSerializer,
+    AccesoExternoSerializer,
+)
 __all__ = [
     'UserSerializer',
     'RolSerializer',

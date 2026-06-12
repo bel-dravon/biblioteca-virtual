@@ -10,3 +10,4 @@ export { perfilesService } from './perfiles';
 export { historialService } from './historial';
 export { palabrasClaveService } from './palabrasClave';
 export { librosService } from './libros';
+export { aportesService } from './aportes';

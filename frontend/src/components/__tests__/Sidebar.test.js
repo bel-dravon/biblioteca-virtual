@@ -38,7 +38,7 @@ describe('Sidebar', () => {
     // so items appear twice. Use getAllByText to check at least one exists.
     expect(screen.getAllByText('Gestión Usuarios').length).toBeGreaterThanOrEqual(1);
     expect(screen.getAllByText('Gestión Préstamos').length).toBeGreaterThanOrEqual(1);
-    expect(screen.getAllByText('Gestión de Acervo').length).toBeGreaterThanOrEqual(1);
+    expect(screen.getAllByText('Gestión de Trabajos').length).toBeGreaterThanOrEqual(1);
   });
 
   test('hides admin items for student role', () => {
@@ -52,7 +52,7 @@ describe('Sidebar', () => {
 
     expect(screen.queryByText('Gestión Usuarios')).not.toBeInTheDocument();
     expect(screen.queryByText('Gestión Préstamos')).not.toBeInTheDocument();
-    expect(screen.queryByText('Gestión de Acervo')).not.toBeInTheDocument();
+    expect(screen.queryByText('Gestión de Trabajos')).not.toBeInTheDocument();
   });
 
   test('has nav element with aria-label', () => {
