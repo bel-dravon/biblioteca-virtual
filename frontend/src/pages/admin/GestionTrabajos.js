@@ -122,7 +122,7 @@ export default function GestionTrabajos() {
       <Container maxWidth="lg">
         <Box sx={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', mb: 3, gap: 2, flexWrap: 'wrap' }}>
           <Typography variant="h4" fontWeight="bold" color="primary">
-            Gestion de Acervo
+            Gestion de Trabajos
           </Typography>
           <Button
             component={RouterLink}

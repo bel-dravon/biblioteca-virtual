@@ -9,7 +9,6 @@ import ExploreIcon from '@mui/icons-material/Explore';
 import MenuBookIcon from '@mui/icons-material/MenuBook';
 import FolderIcon from '@mui/icons-material/Folder';
 import CampaignIcon from '@mui/icons-material/Campaign';
-import DashboardIcon from '@mui/icons-material/Dashboard';
 import MenuIcon from '@mui/icons-material/Menu';
 import CloseIcon from '@mui/icons-material/Close';
 import LogoutIcon from '@mui/icons-material/Logout';
@@ -21,6 +20,8 @@ import PeopleIcon from '@mui/icons-material/People';
 import UploadFileIcon from '@mui/icons-material/UploadFile';
 import AddCircleIcon from '@mui/icons-material/AddCircle';
 import LocalOfferIcon from '@mui/icons-material/LocalOffer';
+import CloudUploadIcon from '@mui/icons-material/CloudUpload';
+import CloudDownloadIcon from '@mui/icons-material/CloudDownload';
 import { useAuth } from '../context/AuthContext';
 import { ROLES } from '../constants/roles';
 
@@ -40,7 +41,7 @@ export default function Sidebar({
 
   const handleLogout = () => {
     logout();
-    navigate('/login');
+    navigate('/');
     if (isMobile) setMobileOpen(false);
   };
 
@@ -65,10 +66,9 @@ export default function Sidebar({
   if (esAdministrador) {
     menuItems.push({ divider: true, label: 'Administración' });
     menuItems.push({ text: 'Gestión Usuarios', icon: <PeopleIcon />, path: '/admin/usuarios' });
-    menuItems.push({ text: 'Gestión Préstamos', icon: <DashboardIcon />, path: '/admin/dashboard' });
-    menuItems.push({ text: 'Gestión de Acervo', icon: <UploadFileIcon />, path: '/admin/trabajos' });
+    menuItems.push({ text: 'Gestión de Trabajos', icon: <UploadFileIcon />, path: '/admin/trabajos' });
     menuItems.push({ text: 'Gestión Convocatorias', icon: <AddCircleIcon />, path: '/admin/convocatorias' });
-    menuItems.push({ divider: true, label: 'Catálogos' });
+    menuItems.push({ text: 'Validar Aportes', icon: <CloudUploadIcon />, path: '/admin/aportes' });
     menuItems.push({ text: 'Gestión Palabras Clave', icon: <LocalOfferIcon />, path: '/admin/palabras-clave' });
   }
   const drawerContent = (
@@ -177,6 +177,10 @@ export default function Sidebar({
             <Typography variant="caption" color="primary" fontWeight={600}>
               {user.rol}
             </Typography>
+            <Typography variant="caption" color="success.main" fontWeight={600} sx={{ display: 'flex', alignItems: 'center', gap: 0.5 }}>
+              <CloudDownloadIcon fontSize="inherit" />
+              {user.creditos || 0} descargas
+            </Typography>
           </Box>
         )}
 
@@ -198,7 +202,7 @@ export default function Sidebar({
             </ListItemIcon>
             {!collapsed && (
               <ListItemText
-                primary={isAuthenticated ? "Cerrar Sesión" : "Iniciar Sesión"}
+                primary={isAuthenticated ? "Cerrar Sesión" : "Ingresar"}
                 primaryTypographyProps={{ fontWeight: 600, fontSize: '0.9rem' }}
               />
             )}

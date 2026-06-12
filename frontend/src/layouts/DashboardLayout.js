@@ -2,7 +2,6 @@ import React, { useEffect, useRef, useState } from 'react';
 import { Box, useTheme, CssBaseline } from '@mui/material';
 import { useLocation } from 'react-router-dom';
 import Sidebar from '../components/Sidebar';
-import Header from '../components/Header';
 import Footer from '../components/Footer';
 
 const DRAWER_WIDTH = 260;
@@ -32,7 +31,6 @@ export default function DashboardLayout({ children }) {
 
       <Box component="main"
         sx={{ flexGrow: 1, display: 'flex', flexDirection: 'column', width: { md: `calc(100% - ${currentSidebarWidth}px)` }, ml: { md: 0 }, height: '100vh', overflow: 'hidden', transition: theme.transitions.create(['width', 'margin'], { easing: theme.transitions.easing.sharp, duration: theme.transitions.duration.enteringScreen, }), }} >
-        <Header />
         <Box ref={scrollContainerRef} sx={{ flexGrow: 1, overflowY: 'auto', display: 'flex', flexDirection: 'column' }} >
           <Box sx={{ p: { xs: 2, md: 4 }, flexGrow: 1 }}>
             {children}

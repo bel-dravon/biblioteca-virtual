@@ -413,7 +413,7 @@ export default function UserManagement() {
             <Box sx={{ display: 'flex', flexDirection: 'column', gap: 2.5, mt: 1 }}>
               <TextField
                 fullWidth
-                label="Nombre de usuario"
+                label="Nombre"
                 name="username"
                 value={formData.username}
                 onChange={handleChange}

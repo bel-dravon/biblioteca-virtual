@@ -11,14 +11,14 @@ class UserSerializer(serializers.ModelSerializer):
     """
     Serializador para el modelo User de Django.
 
-    Maneja la creación de usuarios con validación de contraseña
-    y campos opcionales de nombre.
+    Maneja la creación y actualización de usuarios con validación de contraseña.
     """
 
     password = serializers.CharField(
         write_only=True,
+        required=False,  # ← CLAVE: no obligatorio en updates parciales
         min_length=8,
-        help_text='Contraseña (mínimo 8 caracteres)'
+        help_text='Contraseña (mínimo 8 caracteres). Solo requerida al crear usuario.'
     )
     email = serializers.EmailField(
         required=True,
@@ -46,16 +46,22 @@ class UserSerializer(serializers.ModelSerializer):
         return value.lower()
 
     def validate_email(self, value):
-        """Valida unicidad del email."""
+        """Valida unicidad del email y devuelve el usuario existente si hay duplicado."""
         queryset = User.objects.filter(email__iexact=value)
         if self.instance is not None:
             queryset = queryset.exclude(id=self.instance.id)
-        if queryset.exists():
-            raise serializers.ValidationError('Este correo ya está registrado.')
+        
+        existing = queryset.first()
+        if existing:
+            raise serializers.ValidationError(
+                f'Este correo ya está registrado por el usuario: {existing.username}'
+            )
         return value.lower()
 
     def validate_password(self, value):
         """Valida la contraseña usando los validadores de Django."""
+        if value is None:
+            return value
         try:
             validate_password(value)
         except DjangoValidationError as e:
@@ -72,3 +78,21 @@ class UserSerializer(serializers.ModelSerializer):
             last_name=validated_data.get('last_name', '')
         )
         return user
+
+    def update(self, instance, validated_data):
+        """Actualiza usuario. Si envía password, la hashea con set_password()."""
+        password = validated_data.pop('password', None)
+        
+        # Actualiza el resto de campos normalmente
+        for attr, value in validated_data.items():
+            setattr(instance, attr, value)
+        
+        # Si enviaron password nueva, hashearla correctamente
+        if password is not None:
+            instance.set_password(password)
+            """ from rest_framework.authtoken.models import Token
+            Token.objects.filter(user=instance).delete() """
+
+        
+        instance.save()
+        return instance

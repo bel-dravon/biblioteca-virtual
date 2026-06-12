@@ -155,3 +155,18 @@ class TrabajoInvestigacion(models.Model):
         if self.archivo_ruta and not self.thumbnail:
             if self.generate_thumbnail():
                 super().save(update_fields=['thumbnail'])
+
+    # Nuevos campos para control de acceso
+    permite_preview_publico = models.BooleanField(
+        default=True,
+        help_text="Si es True, usuarios no autenticados ven una versión limitada"
+    )
+    tipo_preview = models.CharField(
+        max_length=20,
+        choices=[('paginas', 'Número de páginas'), ('porcentaje', 'Porcentaje del texto')],
+        default='paginas'
+    )
+    valor_preview = models.PositiveIntegerField(
+        default=15,
+        help_text="Número de páginas de preview para usuarios externos"
+    )

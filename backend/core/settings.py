@@ -47,7 +47,6 @@ INSTALLED_APPS = [
 
     # Mis Apps
     'biblioteca',
-    'ia_core',
     'drf_yasg',
 ]
 

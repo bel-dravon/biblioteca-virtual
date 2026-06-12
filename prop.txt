@@ -1,11 +1,13 @@
-> git push -u origin version-reducida
-Enumerating objects: 526, done.
-Counting objects: 100% (526/526), done.
-Delta compression using up to 8 threads
-Compressing objects: 100% (512/512), done.
-error: RPC failed; curl 55 Send failure: Connection was reset
-send-pack: unexpected disconnect while reading sideband packet
-Writing objects: 100% (526/526), 2.88 GiB | 7.67 MiB/s, done.
-Total 526 (delta 151), reused 0 (delta 0), pack-reused 0 (from 0)
-fatal: the remote end hung up unexpectedly
-Everything up-to-date
+Actúa como un Desarrollador Full Stack experto en Django y React. Hemos tomado la decisión estratégica de simplificar el proyecto y eliminar por completo todas las funcionalidades de Inteligencia Artificial (RAG, Machine Learning, embeddings y ChromaDB) para enfocarnos exclusivamente en el núcleo del sistema de biblioteca.
+
+Por favor, realiza las siguientes tareas de limpieza en el código:
+
+Remover aplicaciones de IA: Elimina de forma segura o vacía las referencias de la aplicación ia_core (como backend/ia_core/urls.py o servicios relacionados) y asegúrate de que backend/core/urls.py no intente cargar nada de IA.
+
+Modelos de Base de Datos: En tus modelos de Django (aplicación biblioteca o donde corresponda), elimina el modelo ThesisEmbedding o cualquier campo que haga referencia a vectores. Genera y prepara la migración correspondiente (makemigrations) para aplicar este cambio de forma limpia.
+
+Servicios de Analíticas: Revisa analytics_service.py y remueve cualquier lógica de tendencias basada en ML o dependencias de embeddings, dejando únicamente métricas tradicionales de biblioteca (como conteo de préstamos o visitas).
+
+Limpieza del Frontend: En el frontend, remueve el componente SmartLibrarySearch.js (o la lógica de búsqueda inteligente) y asegúrate de que la navegación principal dirija a un buscador tradicional por texto (Título, Autor, Palabras clave) basado en el catálogo estándar de TrabajoInvestigacion.
+
+Al finalizar, confírmame qué archivos modificaste y qué comandos debo ejecutar en la terminal para aplicar las migraciones de la base de datos.

@@ -5,7 +5,7 @@ from django.conf.urls.static import static
 from rest_framework import permissions
 from drf_yasg.views import get_schema_view
 from drf_yasg import openapi
-from biblioteca.views import serve_pdf
+""" from biblioteca.views import serve_pdf_preview """
 
 schema_view = get_schema_view(
     openapi.Info(
@@ -29,6 +29,6 @@ urlpatterns = [
 
 if settings.DEBUG:
     # Ruta especial para PDFs (permite iframes)
-    urlpatterns.append(re_path(r'^media/(?P<path>.*\.pdf)$', serve_pdf))
+    """ urlpatterns.append(re_path(r'^media/(?P<path>.*\.pdf)$', serve_pdf_preview)) """
     # Resto de archivos media (imágenes, etc.)
     urlpatterns += static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)

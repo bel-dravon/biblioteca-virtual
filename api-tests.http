@@ -1,0 +1,322 @@
+@baseUrl = http://localhost:8000
+@token = 6623cb7d9637a35c923dd7ca4ede7dc5c2a44c88
+
+### =====================================================
+### AUTH - Obtener token (haz esto primero)
+### =====================================================
+POST {{baseUrl}}/api/api-token-auth/
+Content-Type: application/json
+
+{
+  "username": "belen",
+  "password": "TheFool0"
+}
+
+### =====================================================
+### USUARIOS
+### =====================================================
+
+### Listar usuarios (requiere gestionar usuarios)
+GET {{baseUrl}}/api/users/
+Authorization: Token {{token}}
+
+### Crear usuario (registro publico)
+POST {{baseUrl}}/api/users/
+Content-Type: application/json
+
+{
+  "username": "nuevo_usuario",
+  "email": "usuario@test.com",
+  "password": "contraseña123",
+  "first_name": "Nombre",
+  "last_name": "Apellido"
+}
+
+### Obtener usuario
+GET {{baseUrl}}/api/users/2/
+Authorization: Token {{token}}
+
+### Actualizar usuario
+PUT {{baseUrl}}/api/users/1/
+Authorization: Token {{token}}
+Content-Type: application/json
+
+{
+  "username": "nuevo_usuario",
+  "email": "actualizado@test.com",
+  "first_name": "Nombre",
+  "last_name": "Apellido"
+}
+
+### Eliminar usuario (no puede ser superusuario ni autoeliminarse)
+DELETE {{baseUrl}}/api/users/10/
+Authorization: Token {{token}}
+
+### =====================================================
+### PERFILES
+### =====================================================
+
+### Listar perfiles
+GET {{baseUrl}}/api/perfiles/
+Authorization: Token {{token}}
+
+### Obtener perfil
+GET {{baseUrl}}/api/perfiles/1/
+Authorization: Token {{token}}
+
+### Crear perfil
+POST {{baseUrl}}/api/perfiles/
+Authorization: Token {{token}}
+Content-Type: application/json
+
+{
+  "usuario": 2,
+  "rol": 2,
+  "telefono": "+593991234567",
+  "carrera": "Ingenieria en Sistemas"
+}
+
+### Actualizar perfil
+PUT {{baseUrl}}/api/perfiles/1/
+Authorization: Token {{token}}
+Content-Type: application/json
+
+{
+  "usuario": 1,
+  "rol": 1,
+  "telefono": "+593999876543",
+  "carrera": "Ingenieria en Software"
+}
+
+### =====================================================
+### ROLES
+### =====================================================
+
+### Listar roles
+GET {{baseUrl}}/api/roles/
+Authorization: Token {{token}}
+
+### Crear rol
+POST {{baseUrl}}/api/roles/
+Authorization: Token {{token}}
+Content-Type: application/json
+
+{
+  "nombre": "Editor",
+  "puede_gestionar_usuarios": false,
+  "puede_subir_contenido": true,
+  "puede_aprobar_contenido": false,
+  "puede_eliminar_contenido": false
+}
+
+### =====================================================
+### TRABAJOS DE INVESTIGACION
+### =====================================================
+
+### Listar trabajos (publico)
+GET {{baseUrl}}/api/trabajos/
+
+### Listar con filtros
+GET {{baseUrl}}/api/trabajos/?titulo=python&autor=juan&anio=2024&tipo=tesis
+
+### Obtener trabajo
+GET {{baseUrl}}/api/trabajos/1/
+
+### Crear trabajo (multipart - con archivo)
+POST {{baseUrl}}/api/trabajos/
+Authorization: Token {{token}}
+Content-Type: multipart/form-data; boundary=----WebKitFormBoundary
+
+------WebKitFormBoundary
+Content-Disposition: form-data; name="titulo"
+
+Mi Tesis de Prueba
+------WebKitFormBoundary
+Content-Disposition: form-data; name="autores_texto"
+
+Juan Perez, Maria Garcia
+------WebKitFormBoundary
+Content-Disposition: form-data; name="resumen"
+
+Resumen del trabajo de investigacion...
+------WebKitFormBoundary
+Content-Disposition: form-data; name="anio_publicacion"
+
+2024
+------WebKitFormBoundary
+Content-Disposition: form-data; name="tipo_material"
+
+tesis
+------WebKitFormBoundary
+Content-Disposition: form-data; name="palabras_clave_manual"
+
+["python", "django", "api"]
+------WebKitFormBoundary
+Content-Disposition: form-data; name="archivo_ruta"; filename="documento.pdf"
+Content-Type: application/pdf
+
+< ./documento.pdf
+------WebKitFormBoundary--
+
+### Actualizar trabajo
+PUT {{baseUrl}}/api/trabajos/1/
+Authorization: Token {{token}}
+Content-Type: application/json
+
+{
+  "titulo": "Tesis Actualizada",
+  "autores_texto": "Juan Perez",
+  "resumen": "Nuevo resumen...",
+  "anio_publicacion": 2024,
+  "tipo_material": "tesis"
+}
+
+### Eliminar trabajo
+DELETE {{baseUrl}}/api/trabajos/1/
+Authorization: Token {{token}}
+
+### Subir trabajo (endpoint alternativo)
+POST {{baseUrl}}/api/trabajos/subir_trabajo/
+Authorization: Token {{token}}
+Content-Type: multipart/form-data; boundary=----WebKitFormBoundary
+
+------WebKitFormBoundary
+Content-Disposition: form-data; name="titulo"
+
+Tesis por Upload
+------WebKitFormBoundary
+Content-Disposition: form-data; name="autores_texto"
+
+Autor Test
+------WebKitFormBoundary
+Content-Disposition: form-data; name="resumen"
+
+Resumen...
+------WebKitFormBoundary
+Content-Disposition: form-data; name="anio_publicacion"
+
+2024
+------WebKitFormBoundary
+Content-Disposition: form-data; name="tipo_material"
+
+tesis
+------WebKitFormBoundary
+Content-Disposition: form-data; name="palabras_clave_manual"
+
+["test"]
+------WebKitFormBoundary--
+
+### =====================================================
+### LIBROS
+### =====================================================
+
+### Listar libros (publico)
+GET {{baseUrl}}/api/libros/
+
+### Filtrar libros
+GET {{baseUrl}}/api/libros/?titulo=java&palabra_clave=programacion
+
+### Obtener libro
+GET {{baseUrl}}/api/libros/1/
+
+### =====================================================
+### PALABRAS CLAVE
+### =====================================================
+
+### Listar palabras clave
+GET {{baseUrl}}/api/palabras-clave/
+
+### Crear palabra clave
+POST {{baseUrl}}/api/palabras-clave/
+Authorization: Token {{token}}
+Content-Type: application/json
+
+{
+  "termino": "inteligencia artificial"
+}
+
+### =====================================================
+### CONVOCATORIAS
+### =====================================================
+
+### Listar convocatorias
+GET {{baseUrl}}/api/convocatorias/
+
+### Crear convocatoria
+POST {{baseUrl}}/api/convocatorias/
+Authorization: Token {{token}}
+Content-Type: application/json
+
+{
+  "titulo": "Convocatoria 2024",
+  "descripcion": "Descripcion de la convocatoria",
+  "fecha_inicio": "2024-01-01",
+  "fecha_fin": "2024-12-31"
+}
+
+### =====================================================
+### HISTORIAL
+### =====================================================
+
+### Listar historial del usuario autenticado
+GET {{baseUrl}}/api/historial/
+Authorization: Token {{token}}
+
+### Crear registro de visualizacion
+POST {{baseUrl}}/api/historial/
+Authorization: Token {{token}}
+Content-Type: application/json
+
+{
+  "trabajo": 1
+}
+
+### =====================================================
+### ESTADISTICAS
+### =====================================================
+
+### Estadisticas de tendencias
+GET {{baseUrl}}/api/estadisticas/tendencias/
+
+### Trabajos por mes/anio
+GET {{baseUrl}}/api/estadisticas/trabajos-mes/
+
+### =====================================================
+### IA / INTELIGENCIA ARTIFICIAL
+### =====================================================
+
+### Busqueda semantica (RAG Search)
+POST {{baseUrl}}/ia/search/
+Authorization: Token {{token}}
+Content-Type: application/json
+
+{
+  "query": "inteligencia artificial en educacion",
+  "limit": 5,
+  "filters": {}
+}
+
+### Respuesta RAG con contexto
+POST {{baseUrl}}/ia/rag/
+Authorization: Token {{token}}
+Content-Type: application/json
+
+{
+  "query": "como aplicar machine learning en tesis?",
+  "limit": 5,
+  "filters": {}
+}
+
+### Analisis de tendencias (requiere ser Administrador)
+GET {{baseUrl}}/ia/analytics/trends/?clusters=6
+Authorization: Token {{token}}
+
+### =====================================================
+### DOCUMENTACION
+### =====================================================
+
+### Swagger UI
+GET {{baseUrl}}/swagger/
+
+### ReDoc
+GET {{baseUrl}}/redoc/

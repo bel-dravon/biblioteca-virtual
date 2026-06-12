@@ -226,7 +226,7 @@ export default function SubirTrabajo() {
     <Box sx={{ bgcolor: 'background.default', minHeight: '100vh', pb: 4 }}>
       <Container maxWidth="md" sx={{ py: 4 }}>
         <Typography variant="h4" fontWeight="bold" gutterBottom color="primary">
-          {isEditMode ? 'Editar Trabajo' : 'Gestion de Acervo'}
+          {isEditMode ? 'Editar Trabajo' : 'Gestion de Trabajos'}
         </Typography>
         <Typography variant="body1" color="text.secondary" sx={{ mb: 4 }}>
           {isEditMode

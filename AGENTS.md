@@ -17,7 +17,18 @@ build/test commands and code conventions used in this codebase.
 
 ## Repository Layout
 ```text
-backend/
+backend/{
+  "name": "remove_ia_app",
+  "arguments": {
+    "paths": [
+      "backend/ia_core",
+      "frontend/src/api/config.js"
+    ]
+  }
+}{
+  "name": "clean_model_chromadb",
+  "arguments": {}
+}
   core/                    # settings.py, urls.py
   biblioteca/              # main domain app (models/views/serializers split into packages)
   ia_core/                 # AI app (views.py/models.py files + services/ package)

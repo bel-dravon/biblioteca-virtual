@@ -8,6 +8,7 @@ import theme from './theme/theme';
 import DashboardLayout from './layouts/DashboardLayout';
 import RoleRoute from './components/RoleRoute';
 import { ADMIN_ONLY_ROLES } from './constants/roles';
+import AdminAportes from './pages/AdminAportes';
 
 // Lazy-loaded pages
 const Login = React.lazy(() => import('./pages/Login'));
@@ -18,7 +19,6 @@ const MiBiblioteca = React.lazy(() => import('./pages/MiBiblio'));
 const Convocatorias = React.lazy(() => import('./pages/Convocatorias'));
 const TrabajoDetalle = React.lazy(() => import('./pages/trabajo/TrabajoDetalle'));
 const SubirTrabajo = React.lazy(() => import('./pages/SubirTrabajo'));
-const AdminDashboard = React.lazy(() => import('./pages/AdminDashboard'));
 const UserProfile = React.lazy(() => import('./pages/UserProfile'));
 const CrearConvocatoria = React.lazy(() => import('./pages/CrearConvocatoria'));
 const About = React.lazy(() => import('./pages/About'));
@@ -90,14 +90,7 @@ function AppContent() {
               </RoleRoute>
             }
           />
-          <Route
-            path="/admin/dashboard"
-            element={
-              <RoleRoute allowedRoles={ADMIN_ONLY_ROLES}>
-                <AdminDashboard />
-              </RoleRoute>
-            }
-          />
+
           <Route path="/perfil" element={<ProtectedRoute><UserProfile /></ProtectedRoute>} />
           <Route
             path="/admin/nueva-convocatoria"
@@ -131,6 +124,14 @@ function AppContent() {
                 <GestionPalabrasClave />
               </RoleRoute>
             }
+          />
+          <Route 
+            path="/admin/aportes" 
+            element={
+              <RoleRoute allowedRoles={ADMIN_ONLY_ROLES}>
+                <AdminAportes />
+              </RoleRoute>
+            } 
           />
           <Route path="*" element={<PublicLayoutRoute><NotFound /></PublicLayoutRoute>} />
         </Routes>
