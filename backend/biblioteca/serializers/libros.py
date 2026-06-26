@@ -15,13 +15,17 @@ class LibroSerializer(serializers.ModelSerializer):
         fields = [
             'id',
             'titulo',
-            'autor',
+            'autor_texto',
             'isbn',
             'editorial',
             'anio_publicacion',
             'numero_edicion',
             'stock',
+            'resumen',
+            'signatura_topografica',
+            'imagen_portada',
             'palabras_clave',
-            'portada',
+            'created_at',
+            'updated_at',
         ]
         read_only_fields = fields

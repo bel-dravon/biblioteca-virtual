@@ -8,7 +8,7 @@ from biblioteca.permissions import CanDeleteContent, CanManageUsers
 
 
 class PalabraClaveViewSet(viewsets.ModelViewSet):
-    """ViewSet para gestión de palabras clave."""
+    """ViewSet para gestion de palabras clave."""
 
     queryset = PalabraClave.objects.all()
     serializer_class = PalabraClaveSerializer

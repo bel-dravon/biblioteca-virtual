@@ -1,0 +1,12 @@
+Discrepancias con la Especificación Funcional (Correccion.txt):
+
+1.  **Catálogo Bibliográfico:**
+    *   **Visualización de TrabajoInvestigacion:** Falta la lógica para que los usuarios internos vean el documento completo sin poder descargarlo, y para que los usuarios externos vean solo las primeras 15 páginas. El campo `contenido` en `TrabajoInvestigacion` no está diseñado para manejar el contenido PDF de esta manera.
+
+2.  **Aportes y Acceso:**
+    *   **Consumo de CreditoDescarga:** Falta la lógica para marcar una fila de `CreditoDescarga` como `usado=true` y llenar `usado_en` y `usado_para_id` cuando un usuario (interno o externo) consume una descarga.
+
+3.  **Operaciones:**
+    *   **Recálculo de Estado de Convocatoria:** El campo `estado` en el modelo `Convocatoria` no se recalcula periódicamente a partir de `fecha_fin` como un caché. Actualmente se almacena directamente.
+    *   **Gestión de Stock en SolicitudPrestamo:** Falta la lógica para descontar 1 del `stock` del libro al aprobar una `SolicitudPrestamo` y reintegrar 1 al `stock` al marcarla como `devuelta`.
+    *   **Disparo de Notificaciones:** No está implementada la lógica para disparar notificaciones en los eventos específicos mencionados en la especificación (aporte nuevo, aporte resuelto, solicitud de préstamo nueva, préstamo resuelto). El modelo `Notificacion` solo define la estructura, no los disparadores.

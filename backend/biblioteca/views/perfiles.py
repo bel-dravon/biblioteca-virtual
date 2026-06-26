@@ -8,7 +8,7 @@ from biblioteca.permissions import CanManageUsers
 
 
 class PerfilViewSet(viewsets.ModelViewSet):
-    """ViewSet para gestión de perfiles de usuario."""
+    """ViewSet para gestion de perfiles de usuario."""
 
     queryset = Perfil.objects.select_related('usuario', 'rol')
     serializer_class = PerfilSerializer

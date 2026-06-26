@@ -2,8 +2,8 @@ from django.db import models
 
 
 class PaginaPDF(models.Model):
-    trabajo = models.ForeignKey(
-        'TrabajoInvestigacion',
+    material = models.ForeignKey(
+        'biblioteca.MaterialBibliografico',
         on_delete=models.CASCADE,
         related_name='paginas'
     )
@@ -12,7 +12,7 @@ class PaginaPDF(models.Model):
 
     class Meta:
         ordering = ['numero']
-        unique_together = ['trabajo', 'numero']
+        unique_together = ['material', 'numero']
 
     def __str__(self):
-        return f"Página {self.numero} - {self.trabajo.titulo}"
+        return f"Pagina {self.numero} - {self.material.titulo}"

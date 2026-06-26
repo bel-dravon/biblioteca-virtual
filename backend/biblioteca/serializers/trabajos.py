@@ -11,23 +11,27 @@ from .palabras_clave import PalabraClaveSerializer
 class TrabajoInvestigacionSerializer(serializers.ModelSerializer):
     """Serializador general para trabajos de investigacion."""
 
-    palabras_clave = serializers.PrimaryKeyRelatedField(
-        queryset=PalabraClave.objects.all(),
-        many=True,
-        required=False,
-        help_text='Lista de IDs de palabras clave'
-    )
+    palabras_clave = serializers.SerializerMethodField()
+
     class Meta:
         model = TrabajoInvestigacion
         fields = [
             'id', 'titulo', 'resumen',
-            'anio_publicacion', 'archivo_ruta', 'thumbnail',
-            'tipo_material', 'especialidad',
+            'anio_publicacion', 'archivo_ruta',
+            'especialidad', 'contenido',
             'tiene_archivo_digital', 'fuente_fisica',
             'signatura_topografica', 'created_at', 'updated_at',
-            'autores_texto', 'asesor_texto', 'palabras_clave'
+            'autor_texto', 'asesor_texto', 'palabras_clave',
+            'permite_preview_publico', 'imagen_portada',
         ]
-        read_only_fields = ['id', 'created_at', 'updated_at', 'thumbnail']
+        read_only_fields = ['id', 'created_at', 'updated_at']
+
+    def get_palabras_clave(self, obj):
+        """Obtiene palabras clave a traves de la relacion intermedia en el padre."""
+        palabras = PalabraClave.objects.filter(
+            relaciones_materiales__material=obj
+        )
+        return PalabraClaveSerializer(palabras, many=True).data
 
     def validate_titulo(self, value):
         return _validate_titulo(value)
@@ -38,20 +42,19 @@ class TrabajoInvestigacionSerializer(serializers.ModelSerializer):
     def validate_archivo_ruta(self, value):
         return _validate_archivo_ruta(value)
 
-    def to_representation(self, instance):
-        """Expande palabras_clave a objetos completos para lectura."""
-        response = super().to_representation(instance)
-        response['palabras_clave'] = PalabraClaveSerializer(
-            instance.palabras_clave.all(), many=True
-        ).data
-        return response
-
     def create(self, validated_data):
         """Crea un nuevo trabajo con sus relaciones ManyToMany."""
         palabras_clave_data = validated_data.pop('palabras_clave', [])
 
         trabajo = TrabajoInvestigacion.objects.create(**validated_data)
-        trabajo.palabras_clave.set(palabras_clave_data)
+        
+        # Crear relaciones a traves del padre
+        for palabra in palabras_clave_data:
+            from biblioteca.models import MaterialBibliograficoPalabraClave
+            MaterialBibliograficoPalabraClave.objects.get_or_create(
+                material=trabajo,
+                palabra_clave=palabra
+            )
         return trabajo
 
     def update(self, instance, validated_data):
@@ -63,7 +66,14 @@ class TrabajoInvestigacionSerializer(serializers.ModelSerializer):
         instance.save()
 
         if palabras_clave_data is not None:
-            instance.palabras_clave.set(palabras_clave_data)
+            # Borrar relaciones antiguas y crear nuevas
+            from biblioteca.models import MaterialBibliograficoPalabraClave
+            MaterialBibliograficoPalabraClave.objects.filter(material=instance).delete()
+            for palabra in palabras_clave_data:
+                MaterialBibliograficoPalabraClave.objects.get_or_create(
+                    material=instance,
+                    palabra_clave=palabra
+                )
 
         return instance
 
@@ -82,16 +92,17 @@ class TrabajoInvestigacionUploadSerializer(serializers.ModelSerializer):
         model = TrabajoInvestigacion
         fields = [
             'id', 'titulo', 'resumen', 'anio_publicacion', 'archivo_ruta',
-            'tipo_material', 'especialidad', 'fuente_fisica',
-            'signatura_topografica', 'autores_texto', 'asesor_texto', 'palabras_clave_manual'
+            'especialidad', 'fuente_fisica',
+            'signatura_topografica', 'autor_texto', 'asesor_texto',
+            'contenido', 'palabras_clave_manual', 'permite_preview_publico'
         ]
         read_only_fields = ['id']
         extra_kwargs = {
             'archivo_ruta': {'required': True},
             'titulo': {'required': True},
             'resumen': {'required': True},
-            'tipo_material': {'required': True},
             'anio_publicacion': {'required': True},
+            'contenido': {'required': True},
         }
 
     def validate_titulo(self, value):
@@ -114,7 +125,7 @@ class TrabajoInvestigacionUploadSerializer(serializers.ModelSerializer):
         value = (value or '').strip()
         return value or None
 
-    def validate_autores_texto(self, value):
+    def validate_autor_texto(self, value):
         value = ' '.join((value or '').strip().split())
         if len(value) < 3:
             raise serializers.ValidationError('Debes registrar al menos un autor en texto libre.')
@@ -146,10 +157,13 @@ class TrabajoInvestigacionUploadSerializer(serializers.ModelSerializer):
         trabajo = TrabajoInvestigacion.objects.create(**validated_data)
 
         if palabras_clave_manual:
-            trabajo.palabras_clave.set([
-                _get_or_create_palabra_clave(termino)
-                for termino in palabras_clave_manual
-            ])
+            from biblioteca.models import MaterialBibliograficoPalabraClave
+            for termino in palabras_clave_manual:
+                palabra = _get_or_create_palabra_clave(termino)
+                MaterialBibliograficoPalabraClave.objects.get_or_create(
+                    material=trabajo,
+                    palabra_clave=palabra
+                )
 
         return trabajo
 
@@ -197,9 +211,9 @@ def _clean_string_list(values):
 
 
 def _get_or_create_palabra_clave(termino):
-    normalized_term = ' '.join((termino or '').strip().split())
+    normalized_term = ' '.join((termino or '').strip().split()).lower()
     palabra_clave, _ = PalabraClave.objects.get_or_create(
-        termino=normalized_term.capitalize()
+        termino=normalized_term
     )
     return palabra_clave
 

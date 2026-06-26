@@ -8,7 +8,7 @@ from biblioteca.permissions import CanManageUsers
 
 
 class RolViewSet(viewsets.ModelViewSet):
-    """ViewSet para gestión de roles del sistema."""
+    """ViewSet para gestion de roles del sistema."""
 
     queryset = Rol.objects.all()
     serializer_class = RolSerializer

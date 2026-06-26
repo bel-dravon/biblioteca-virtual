@@ -18,37 +18,52 @@ def serve_pdf(request, path):
 
 @api_view(['GET'])
 @permission_classes([AllowAny])
-def serve_pdf_as_images(request, trabajo_id):
+def serve_pdf_as_images(request, material_id):
     """
-    Devuelve las páginas del PDF como imágenes PNG pre-generadas.
-    ¡Mucho más rápido porque lee de la base de datos y archivos estáticos!
+    Devuelve las paginas del PDF como imagenes PNG pre-generadas.
+    Preview fijo de 15 paginas para usuarios externos.
     """
-    from biblioteca.models import TrabajoInvestigacion, AccesoExterno
+    from biblioteca.models import MaterialBibliografico, AccesoExterno
 
     try:
-        trabajo = TrabajoInvestigacion.objects.get(id=trabajo_id)
-    except TrabajoInvestigacion.DoesNotExist:
+        material = MaterialBibliografico.objects.get(id=material_id)
+    except MaterialBibliografico.DoesNotExist:
         raise Http404("Documento no encontrado")
 
     user = request.user
     token = request.GET.get('token')
+
+    # Verificar si es un trabajo de investigacion
+    try:
+        trabajo = material.trabajoinvestigacion
+    except MaterialBibliografico.trabajoinvestigacion.RelatedObjectDoesNotExist:
+        raise Http404("Este material no tiene paginas PDF")
 
     # Verificar acceso
     es_interno = user.is_authenticated
     tiene_acceso_completo = False
     if token:
         tiene_acceso_completo = AccesoExterno.objects.filter(
-            token_acceso=token, trabajo=trabajo
+            token_acceso=token, material=material
         ).exists()
 
-    # Determinar cuántas páginas mostrar
+    # Determinar cuantas paginas mostrar
     if not es_interno and not tiene_acceso_completo:
-        n_paginas = trabajo.valor_preview if trabajo.tipo_preview == 'paginas' else 15
+        if not trabajo.permite_preview_publico:
+            return Response({
+                'titulo': trabajo.titulo,
+                'total_paginas': 0,
+                'paginas_mostradas': 0,
+                'es_preview': True,
+                'mensaje': 'Este documento no permite preview publico.',
+                'paginas': []
+            })
+        n_paginas = 15
     else:
         n_paginas = None
 
-    # Obtener páginas pre-generadas de la base de datos (¡instantáneo!)
-    paginas_qs = trabajo.paginas.all()
+    # Obtener paginas pre-generadas de la base de datos
+    paginas_qs = material.paginas.all()
     if n_paginas:
         paginas_qs = paginas_qs[:n_paginas]
 
@@ -61,7 +76,7 @@ def serve_pdf_as_images(request, trabajo_id):
 
     return Response({
         'titulo': trabajo.titulo,
-        'total_paginas': trabajo.paginas.count(),
+        'total_paginas': material.paginas.count(),
         'paginas_mostradas': len(paginas),
         'es_preview': not es_interno and not tiene_acceso_completo,
         'paginas': paginas

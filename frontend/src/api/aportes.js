@@ -30,7 +30,10 @@ export const aportesService = {
     },
 
     // Admin rechaza
-    rechazar: async (id, motivo) => {
-        return await apiClient.post(`/aportes/${id}/rechazar/`, { motivo });
+    rechazar: async (id, motivo_rechazo, comentario_rechazo = '') => {
+        return await apiClient.post(`/aportes/${id}/rechazar/`, {
+            motivo_rechazo,
+            comentario_rechazo,
+        });
     },
 };

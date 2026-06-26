@@ -23,10 +23,16 @@ class LibroViewSet(viewsets.ReadOnlyModelViewSet):
         if titulo := params.get('titulo'):
             filters &= Q(titulo__icontains=titulo)
 
+        if autor := params.get('autor'):
+            filters &= Q(autor_texto__icontains=autor)
+
         if palabra_clave := params.get('palabra_clave'):
             filters &= Q(palabras_clave__termino__icontains=palabra_clave)
 
         if palabra_clave_id := params.get('palabra_clave_id'):
             filters &= Q(palabras_clave__id=palabra_clave_id)
+
+        if anio := params.get('anio'):
+            filters &= Q(anio_publicacion=anio)
 
         return queryset.filter(filters).distinct()

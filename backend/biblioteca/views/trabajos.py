@@ -1,4 +1,4 @@
-"""Vista para trabajos de investigación."""
+"""Vista para trabajos de investigacion."""
 import json
 import logging
 
@@ -24,9 +24,8 @@ logger = logging.getLogger(__name__)
 
 
 class TrabajoInvestigacionViewSet(viewsets.ModelViewSet):
-    """ViewSet principal para trabajos de investigación."""
+    """ViewSet principal para trabajos de investigacion."""
     queryset = TrabajoInvestigacion.objects.all()
-    """ queryset = TrabajoInvestigacion.objects.prefetch_related('palabras_clave') """
     serializer_class = TrabajoInvestigacionSerializer
     parser_classes = [MultiPartParser, FormParser, JSONParser]
 
@@ -55,10 +54,7 @@ class TrabajoInvestigacionViewSet(viewsets.ModelViewSet):
             filters &= Q(resumen__icontains=resumen)
 
         if autor := params.get('autor'):
-            filters &= Q(autores_texto__icontains=autor)
-
-        if tipo := params.get('tipo'):
-            filters &= Q(tipo_material=tipo)
+            filters &= Q(autor_texto__icontains=autor)
 
         if anio := params.get('anio'):
             filters &= Q(anio_publicacion=anio)
@@ -70,7 +66,7 @@ class TrabajoInvestigacionViewSet(viewsets.ModelViewSet):
 
     @action(detail=False, methods=['post'], permission_classes=[CanManageUsers])
     def subir_trabajo(self, request):
-        """Endpoint para subir un nuevo trabajo de investigación."""
+        """Endpoint para subir un nuevo trabajo de investigacion."""
         return self._handle_manual_upload(request)
 
     def create(self, request, *args, **kwargs):
@@ -83,7 +79,7 @@ class TrabajoInvestigacionViewSet(viewsets.ModelViewSet):
                 serializer = self.get_serializer(data=self._build_upload_payload(request))
                 if not serializer.is_valid():
                     return api_error_response(
-                        message='Error de validación',
+                        message='Error de validacion',
                         details=serializer.errors,
                         http_status=status.HTTP_400_BAD_REQUEST
                     )
@@ -101,7 +97,7 @@ class TrabajoInvestigacionViewSet(viewsets.ModelViewSet):
                 )
         except ValueError as e:
             return api_error_response(
-                message='Error de validación',
+                message='Error de validacion',
                 details=str(e),
                 http_status=status.HTTP_400_BAD_REQUEST
             )
@@ -144,7 +140,7 @@ class TrabajoInvestigacionViewSet(viewsets.ModelViewSet):
             raise ValueError(f'El campo {field_name} debe enviarse como una lista JSON.')
 
         return parsed_value
-    
+
     @action(detail=True, methods=['get'], permission_classes=[AllowAny])
     def puede_descargar(self, request, pk=None):
         """
@@ -152,7 +148,7 @@ class TrabajoInvestigacionViewSet(viewsets.ModelViewSet):
         """
         trabajo = self.get_object()
         user = request.user
-        
+
         # Usuario interno autenticado
         if user.is_authenticated:
             tiene_credito = CreditoDescarga.objects.filter(
@@ -165,7 +161,7 @@ class TrabajoInvestigacionViewSet(viewsets.ModelViewSet):
                     usuario=user, usado=False
                 ).count()
             })
-    
+
         # Usuario externo (por token en query param)
         token = request.query_params.get('token')
         if token:
@@ -173,7 +169,7 @@ class TrabajoInvestigacionViewSet(viewsets.ModelViewSet):
                 token_acceso=token, usado=False
             ).exists()
             tiene_acceso_completo = AccesoExterno.objects.filter(
-                token_acceso=token, trabajo=trabajo
+                token_acceso=token, material=trabajo.materialbibliografico_ptr
             ).exists()
             return Response({
                 'puede_descargar': tiene_credito,
@@ -181,11 +177,11 @@ class TrabajoInvestigacionViewSet(viewsets.ModelViewSet):
                 'es_interno': False,
                 'token': token
             })
-        
+
         # Sin token, sin login: no puede descargar
         return Response({
             'puede_descargar': False,
             'puede_ver_completo': False,
             'es_interno': False,
-            'mensaje': 'Regístrate o aporta un documento para descargar'
+            'mensaje': 'Registrate o aporta un documento para descargar'
         })

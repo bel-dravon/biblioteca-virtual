@@ -1,9 +1,8 @@
 """Serializador para perfiles."""
 from rest_framework import serializers
-from django.contrib.auth.models import User
 
-from biblioteca.models import Rol, Perfil
-from .users import UserSerializer
+from biblioteca.models import Rol, Perfil, User
+from .auth import UserSerializer
 from .roles import RolSerializer
 
 

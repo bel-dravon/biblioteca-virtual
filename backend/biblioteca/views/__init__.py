@@ -4,10 +4,10 @@ from .palabras_clave import PalabraClaveViewSet
 from .libros import LibroViewSet
 from .trabajos import TrabajoInvestigacionViewSet
 from .historial import HistorialVisualizacionViewSet
-from .convocatorias import ConvocatoriaViewSet
 from .users import UserViewSet
-from .estadisticas import estadisticas_tendencias, trabajos_por_mes
-""" from .pdf import serve_pdf_preview """
+from .convocatorias import ConvocatoriaViewSet, HistorialEstadoConvocatoriaViewSet
+from .operaciones import SolicitudPrestamoViewSet, NotificacionViewSet
+from .pagina_pdf import PaginaPDFViewSet
 from .contribuciones import (
     DocumentoAporteViewSet,
     CreditoDescargaViewSet,
@@ -23,7 +23,11 @@ __all__ = [
     'HistorialVisualizacionViewSet',
     'ConvocatoriaViewSet',
     'UserViewSet',
-    'estadisticas_tendencias',
-    'trabajos_por_mes',
-    'serve_pdf_preview',
+    'SolicitudPrestamoViewSet',
+    'NotificacionViewSet',
+    'DocumentoAporteViewSet',
+    'CreditoDescargaViewSet',
+    'AccesoExternoViewSet',
+    'HistorialEstadoConvocatoriaViewSet',
+    'PaginaPDFViewSet',
 ]

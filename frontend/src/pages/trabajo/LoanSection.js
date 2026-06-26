@@ -11,7 +11,6 @@ import {
   TextField,
   Alert,
   CircularProgress,
-  Chip,
   Divider,
   Fade,
 } from '@mui/material';
@@ -44,14 +43,21 @@ export default function LoanSection({
   const [verificando, setVerificando] = useState(false);
   const [resultadoVerificacion, setResultadoVerificacion] = useState(null);
   const [error, setError] = useState('');
-  const [success, setSuccess] = useState(false);
   const [tokenDescarga, setTokenDescarga] = useState('');
 
   const [formData, setFormData] = useState({
     nombre_completo: user?.first_name ? `${user.first_name} ${user.last_name}` : '',
     email: user?.email || '',
-    institucion: '',
-    grado_academico: '',
+    organizacion_origen: '',
+    titulo: '',
+    descripcion: '',
+    archivo: null,
+  });
+
+  const buildInitialFormData = () => ({
+    nombre_completo: user?.first_name ? `${user.first_name} ${user.last_name}` : '',
+    email: user?.email || '',
+    organizacion_origen: '',
     titulo: '',
     descripcion: '',
     archivo: null,
@@ -71,7 +77,6 @@ export default function LoanSection({
     setLoading(true);
     setVerificando(true);
     setError('');
-    setSuccess(false);
     setResultadoVerificacion(null);
 
     if (!formData.archivo) {
@@ -84,30 +89,25 @@ export default function LoanSection({
     try {
       const response = await aportesService.create(formData);
       setVerificando(false);
+      const estado = response.estado || 'pendiente';
+      const aceptado = estado === 'aceptado';
+      const rechazado = estado === 'rechazado';
       setResultadoVerificacion({
-        exito: true,
-        estado: response.estado || 'aprobado',
+        exito: !rechazado,
+        estado,
         mensaje:
-          response.estado === 'aprobado'
-            ? '¡Documento verificado y aprobado! Se generaron 2 créditos de descarga.'
-            : 'Documento en revisión.',
+          aceptado
+            ? 'Documento aceptado. Se generaron 2 créditos de descarga.'
+            : rechazado
+            ? response.comentario_rechazo || response.motivo_rechazo || 'El documento no cumple con los requisitos.'
+            : 'Documento recibido. Quedó pendiente de revisión por un administrador.',
         tokens: response.tokens || [],
       });
-      setSuccess(true);
 
       setTimeout(() => {
         setModalAporteOpen(false);
-        setSuccess(false);
         setResultadoVerificacion(null);
-        setFormData({
-          nombre_completo: user?.first_name ? `${user.first_name} ${user.last_name}` : '',
-          email: user?.email || '',
-          institucion: '',
-          grado_academico: '',
-          titulo: '',
-          descripcion: '',
-          archivo: null,
-        });
+        setFormData(buildInitialFormData());
       }, 6000);
     } catch (err) {
       setVerificando(false);
@@ -128,7 +128,7 @@ export default function LoanSection({
       const response = await fetch(`${API_URL}/api/creditos/descargar_con_token/`, {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ token: tokenDescarga, trabajo_id: trabajoId }),
+        body: JSON.stringify({ token: tokenDescarga, material_id: trabajoId }),
       });
 
       if (!response.ok) {
@@ -164,7 +164,7 @@ export default function LoanSection({
           'Content-Type': 'application/json',
           Authorization: `Token ${localStorage.getItem('authToken')}`,
         },
-        body: JSON.stringify({ trabajo_id: trabajoId }),
+        body: JSON.stringify({ material_id: trabajoId }),
       });
 
       if (!response.ok) {
@@ -460,8 +460,10 @@ export default function LoanSection({
             bgcolor: verificando
               ? '#F8FAFC'
               : resultadoVerificacion
-              ? resultadoVerificacion.estado === 'aprobado'
+              ? resultadoVerificacion.estado === 'aceptado'
                 ? '#ECFDF5'
+                : resultadoVerificacion.estado === 'pendiente'
+                ? '#FEF3C7'
                 : '#FEF2F2'
               : '#fff',
             color: '#0F172A',
@@ -474,8 +476,10 @@ export default function LoanSection({
           {verificando
             ? 'Verificando documento...'
             : resultadoVerificacion
-            ? resultadoVerificacion.estado === 'aprobado'
-              ? '¡Aporte aprobado!'
+            ? resultadoVerificacion.estado === 'aceptado'
+              ? 'Aporte aceptado'
+              : resultadoVerificacion.estado === 'pendiente'
+              ? 'Aporte en revisión'
               : 'Aporte rechazado'
             : 'Aportar documento'}
         </DialogTitle>
@@ -523,8 +527,10 @@ export default function LoanSection({
                 gap: 2.5,
               }}
             >
-              {resultadoVerificacion.estado === 'aprobado' ? (
+              {resultadoVerificacion.estado === 'aceptado' ? (
                 <CheckCircleIcon sx={{ fontSize: 64, color: '#059669' }} />
+              ) : resultadoVerificacion.estado === 'pendiente' ? (
+                <CheckCircleIcon sx={{ fontSize: 64, color: '#D97706' }} />
               ) : (
                 <CancelIcon sx={{ fontSize: 64, color: '#DC2626' }} />
               )}
@@ -533,11 +539,17 @@ export default function LoanSection({
                 variant="h6"
                 fontWeight={700}
                 color={
-                  resultadoVerificacion.estado === 'aprobado' ? '#059669' : '#DC2626'
+                  resultadoVerificacion.estado === 'aceptado'
+                    ? '#059669'
+                    : resultadoVerificacion.estado === 'pendiente'
+                    ? '#D97706'
+                    : '#DC2626'
                 }
               >
-                {resultadoVerificacion.estado === 'aprobado'
-                  ? '¡Aporte Aprobado!'
+                {resultadoVerificacion.estado === 'aceptado'
+                  ? 'Aporte aceptado'
+                  : resultadoVerificacion.estado === 'pendiente'
+                  ? 'Aporte en revisión'
                   : 'Aporte Rechazado'}
               </Typography>
 
@@ -653,18 +665,10 @@ export default function LoanSection({
                 <TextField
                   fullWidth
                   size="small"
-                  label="Institución"
-                  name="institucion"
-                  value={formData.institucion}
-                  onChange={handleChange}
-                  sx={{ '& .MuiOutlinedInput-root': { borderRadius: 1.5 } }}
-                />
-                <TextField
-                  fullWidth
-                  size="small"
-                  label="Grado académico"
-                  name="grado_academico"
-                  value={formData.grado_academico}
+                  label="Organización de origen"
+                  name="organizacion_origen"
+                  placeholder="Ej: Universidad Nacional de Ingeniería"
+                  value={formData.organizacion_origen}
                   onChange={handleChange}
                   sx={{ '& .MuiOutlinedInput-root': { borderRadius: 1.5 } }}
                 />

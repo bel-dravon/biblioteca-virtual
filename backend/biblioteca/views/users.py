@@ -2,7 +2,8 @@
 import logging
 
 from rest_framework import viewsets, permissions, status
-from django.contrib.auth.models import User
+
+from biblioteca.models import User
 from biblioteca.serializers import UserSerializer
 from biblioteca.permissions import CanManageUsers
 from shared.response_helpers import api_error_response
@@ -12,7 +13,7 @@ logger = logging.getLogger(__name__)
 
 
 class UserViewSet(viewsets.ModelViewSet):
-    """ViewSet para gestión de usuarios."""
+    """ViewSet para gestion de usuarios."""
 
     queryset = User.objects.all()
     serializer_class = UserSerializer
@@ -39,5 +40,5 @@ class UserViewSet(viewsets.ModelViewSet):
                 http_status=status.HTTP_403_FORBIDDEN
             )
 
-        logger.warning(f"Usuario {user_to_delete.username} eliminado por {request.user.username}")
+        logger.warning(f"Usuario {user_to_delete.email} eliminado por {request.user.email}")
         return super().destroy(request, *args, **kwargs)

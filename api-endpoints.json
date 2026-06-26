@@ -1,0 +1,542 @@
+
+{
+  "authentication": {
+    "login": {
+      "method": "POST",
+      "path": "/api/api-token-auth/",
+      "description": "Obtiene un token de autenticación para un usuario. Utiliza email y password. El token debe ser enviado en los headers de futuras peticiones como 'Authorization: Token <token>'",
+      "permissions": "AllowAny",
+      "request_body": {
+        "email": "string",
+        "password": "string"
+      },
+      "response_body": {
+        "token": "string"
+      }
+    }
+  },
+  "users": {
+    "list_users": {
+      "method": "GET",
+      "path": "/api/users/",
+      "description": "Lista todos los usuarios registrados.",
+      "permissions": "Admin only"
+    },
+    "create_user": {
+      "method": "POST",
+      "path": "/api/users/",
+      "description": "Crea un nuevo usuario (solo por Administrador).",
+      "permissions": "Admin only",
+      "request_body": {
+        "email": "string",
+        "password": "string",
+        "first_name": "string",
+        "last_name": "string",
+        "is_staff": "boolean",
+        "is_active": "boolean"
+      }
+    },
+    "retrieve_user": {
+      "method": "GET",
+      "path": "/api/users/{id}/",
+      "description": "Obtiene los detalles de un usuario específico.",
+      "permissions": "Admin only"
+    },
+    "update_user": {
+      "method": "PUT",
+      "path": "/api/users/{id}/",
+      "description": "Actualiza completamente un usuario existente (solo por Administrador).",
+      "permissions": "Admin only"
+    },
+    "partial_update_user": {
+      "method": "PATCH",
+      "path": "/api/users/{id}/",
+      "description": "Actualiza parcialmente un usuario existente (solo por Administrador).",
+      "permissions": "Admin only"
+    },
+    "delete_user": {
+      "method": "DELETE",
+      "path": "/api/users/{id}/",
+      "description": "Elimina un usuario (solo por Administrador).",
+      "permissions": "Admin only"
+    }
+  },
+  "roles": {
+    "list_roles": {
+      "method": "GET",
+      "path": "/api/roles/",
+      "description": "Lista todos los roles disponibles.",
+      "permissions": "Authenticated"
+    },
+    "create_role": {
+      "method": "POST",
+      "path": "/api/roles/",
+      "description": "Crea un nuevo rol.",
+      "permissions": "Admin only"
+    },
+    "retrieve_role": {
+      "method": "GET",
+      "path": "/api/roles/{id}/",
+      "description": "Obtiene los detalles de un rol específico.",
+      "permissions": "Authenticated"
+    },
+    "update_role": {
+      "method": "PUT",
+      "path": "/api/roles/{id}/",
+      "description": "Actualiza completamente un rol existente.",
+      "permissions": "Admin only"
+    },
+    "partial_update_role": {
+      "method": "PATCH",
+      "path": "/api/roles/{id}/",
+      "description": "Actualiza parcialmente un rol existente.",
+      "permissions": "Admin only"
+    },
+    "delete_role": {
+      "method": "DELETE",
+      "path": "/api/roles/{id}/",
+      "description": "Elimina un rol.",
+      "permissions": "Admin only"
+    }
+  },
+  "profiles": {
+    "list_profiles": {
+      "method": "GET",
+      "path": "/api/perfiles/",
+      "description": "Lista todos los perfiles de usuario. Los usuarios solo pueden ver su propio perfil.",
+      "permissions": "Authenticated"
+    },
+    "create_profile": {
+      "method": "POST",
+      "path": "/api/perfiles/",
+      "description": "Crea un nuevo perfil (solo por Administrador).",
+      "permissions": "Admin only"
+    },
+    "retrieve_profile": {
+      "method": "GET",
+      "path": "/api/perfiles/{id}/",
+      "description": "Obtiene los detalles de un perfil específico.",
+      "permissions": "Authenticated (propio) / Admin only (otros)"
+    },
+    "update_profile": {
+      "method": "PUT",
+      "path": "/api/perfiles/{id}/",
+      "description": "Actualiza completamente un perfil existente (solo por Administrador).",
+      "permissions": "Admin only"
+    },
+    "partial_update_profile": {
+      "method": "PATCH",
+      "path": "/api/perfiles/{id}/",
+      "description": "Actualiza parcialmente un perfil existente (solo por Administrador).",
+      "permissions": "Admin only"
+    },
+    "delete_profile": {
+      "method": "DELETE",
+      "path": "/api/perfiles/{id}/",
+      "description": "Elimina un perfil (solo por Administrador).",
+      "permissions": "Admin only"
+    }
+  },
+  "catalog": {
+    "search_catalog": {
+      "method": "GET",
+      "path": "/api/buscar/",
+      "description": "Busqueda unificada en todo el catalogo (libros y trabajos).",
+      "permissions": "AllowAny",
+      "query_params": {
+        "titulo": "string",
+        "autor": "string",
+        "anio": "integer",
+        "palabra_clave": "string",
+        "tipo_material": "string (libro o trabajo)"
+      },
+      "response_body": {
+        "libros": [],
+        "trabajos": [],
+        "total_libros": "integer",
+        "total_trabajos": "integer"
+      }
+    },
+    "recently_added": {
+      "method": "GET",
+      "path": "/api/recien-agregados/",
+      "description": "Devuelve materiales (libros y trabajos) agregados en los últimos 7 días.",
+      "permissions": "AllowAny",
+      "response_body": {
+        "libros": [],
+        "trabajos": [],
+        "total": "integer",
+        "desde": "datetime"
+      }
+    }
+  },
+  "books": {
+    "list_books": {
+      "method": "GET",
+      "path": "/api/libros/",
+      "description": "Lista todos los libros.",
+      "permissions": "AllowAny"
+    },
+    "create_book": {
+      "method": "POST",
+      "path": "/api/libros/",
+      "description": "Crea un nuevo libro.",
+      "permissions": "Admin only"
+    },
+    "retrieve_book": {
+      "method": "GET",
+      "path": "/api/libros/{id}/",
+      "description": "Obtiene los detalles de un libro específico.",
+      "permissions": "AllowAny"
+    },
+    "update_book": {
+      "method": "PUT",
+      "path": "/api/libros/{id}/",
+      "description": "Actualiza completamente un libro existente.",
+      "permissions": "Admin only"
+    },
+    "partial_update_book": {
+      "method": "PATCH",
+      "path": "/api/libros/{id}/",
+      "description": "Actualiza parcialmente un libro existente.",
+      "permissions": "Admin only"
+    },
+    "delete_book": {
+      "method": "DELETE",
+      "path": "/api/libros/{id}/",
+      "description": "Elimina un libro.",
+      "permissions": "Admin only"
+    }
+  },
+  "research_papers": {
+    "list_papers": {
+      "method": "GET",
+      "path": "/api/trabajos/",
+      "description": "Lista todos los trabajos de investigación.",
+      "permissions": "AllowAny"
+    },
+    "create_paper": {
+      "method": "POST",
+      "path": "/api/trabajos/",
+      "description": "Crea un nuevo trabajo de investigación (metadatos y archivo).",
+      "permissions": "Admin only",
+      "request_body_form_data": {
+        "titulo": "string",
+        "resumen": "string",
+        "anio_publicacion": "integer",
+        "archivo_ruta": "file (PDF)",
+        "especialidad": "string",
+        "fuente_fisica": "string",
+        "signatura_topografica": "string",
+        "autor_texto": "string",
+        "asesor_texto": "string",
+        "contenido": "string (empty for file upload)",
+        "palabras_clave_manual": "list of strings",
+        "permite_preview_publico": "boolean",
+        "imagen_portada": "file (optional)"
+      }
+    },
+    "retrieve_paper": {
+      "method": "GET",
+      "path": "/api/trabajos/{id}/",
+      "description": "Obtiene los detalles de un trabajo de investigación específico.",
+      "permissions": "AllowAny"
+    },
+    "update_paper": {
+      "method": "PUT",
+      "path": "/api/trabajos/{id}/",
+      "description": "Actualiza completamente un trabajo de investigación existente.",
+      "permissions": "Admin only"
+    },
+    "partial_update_paper": {
+      "method": "PATCH",
+      "path": "/api/trabajos/{id}/",
+      "description": "Actualiza parcialmente un trabajo de investigación existente.",
+      "permissions": "Admin only"
+    },
+    "delete_paper": {
+      "method": "DELETE",
+      "path": "/api/trabajos/{id}/",
+      "description": "Elimina un trabajo de investigación.",
+      "permissions": "Admin only"
+    },
+    "upload_paper_legacy": {
+      "method": "POST",
+      "path": "/api/trabajos/subir_trabajo/",
+      "description": "Endpoint alternativo para subir un nuevo trabajo de investigación (legado, usa el mismo serializer que create).",
+      "permissions": "Admin only",
+      "request_body_form_data": "{... same as create_paper ...}"
+    },
+    "can_download_paper": {
+      "method": "GET",
+      "path": "/api/trabajos/{id}/puede_descargar/",
+      "description": "Verifica si el usuario (autenticado o por token) puede descargar este trabajo. No inicia la descarga.",
+      "permissions": "AllowAny",
+      "query_params": {
+        "token": "string (opcional, para usuarios externos)"
+      },
+      "response_body": {
+        "puede_descargar": "boolean",
+        "es_interno": "boolean",
+        "creditos_disponibles": "integer (solo para usuarios internos)",
+        "puede_ver_completo": "boolean (solo para usuarios externos, si tienen AccesoExterno)",
+        "token": "string (echo del token enviado, si aplica)",
+        "mensaje": "string (si no puede descargar)"
+      }
+    }
+  },
+  "keywords": {
+    "list_keywords": {
+      "method": "GET",
+      "path": "/api/palabras-clave/",
+      "description": "Lista todas las palabras clave.",
+      "permissions": "Authenticated"
+    },
+    "create_keyword": {
+      "method": "POST",
+      "path": "/api/palabras-clave/",
+      "description": "Crea una nueva palabra clave.",
+      "permissions": "Admin only"
+    },
+    "retrieve_keyword": {
+      "method": "GET",
+      "path": "/api/palabras-clave/{id}/",
+      "description": "Obtiene los detalles de una palabra clave específica.",
+      "permissions": "Authenticated"
+    },
+    "update_keyword": {
+      "method": "PUT",
+      "path": "/api/palabras-clave/{id}/",
+      "description": "Actualiza completamente una palabra clave existente.",
+      "permissions": "Admin only"
+    },
+    "partial_update_keyword": {
+      "method": "PATCH",
+      "path": "/api/palabras-clave/{id}/",
+      "description": "Actualiza parcialmente una palabra clave existente.",
+      "permissions": "Admin only"
+    },
+    "delete_keyword": {
+      "method": "DELETE",
+      "path": "/api/palabras-clave/{id}/",
+      "description": "Elimina una palabra clave.",
+      "permissions": "Admin only"
+    }
+  },
+  "contributions": {
+    "list_contributions": {
+      "method": "GET",
+      "path": "/api/aportes/",
+      "description": "Lista todos los documentos de aporte.",
+      "permissions": "Admin only"
+    },
+    "create_contribution": {
+      "method": "POST",
+      "path": "/api/aportes/",
+      "description": "Crea un nuevo documento de aporte.",
+      "permissions": "Authenticated (Usuario Interno) / AllowAny (Usuario Externo)",
+      "request_body_form_data": {
+        "usuario_interno": "integer (opcional, si el usuario está autenticado)",
+        "nombre_completo": "string",
+        "email": "string",
+        "organizacion_origen": "string",
+        "titulo": "string",
+        "descripcion": "string",
+        "archivo": "file (PDF/DOCX)",
+        "estado": "string (pendiente, aceptado, rechazado - solo editable por admin)",
+        "motivo_rechazo": "string (solo editable por admin)",
+        "comentario_rechazo": "string (solo editable por admin)",
+        "revisado_por": "integer (solo editable por admin)",
+        "revisado_at": "datetime (solo editable por admin)"
+      }
+    },
+    "retrieve_contribution": {
+      "method": "GET",
+      "path": "/api/aportes/{id}/",
+      "description": "Obtiene los detalles de un documento de aporte específico.",
+      "permissions": "Admin only (o propietario del aporte)"
+    },
+    "update_contribution": {
+      "method": "PUT",
+      "path": "/api/aportes/{id}/",
+      "description": "Actualiza completamente un documento de aporte existente (solo por Administrador).",
+      "permissions": "Admin only"
+    },
+    "partial_update_contribution": {
+      "method": "PATCH",
+      "path": "/api/aportes/{id}/",
+      "description": "Actualiza parcialmente un documento de aporte existente (solo por Administrador).",
+      "permissions": "Admin only"
+    },
+    "delete_contribution": {
+      "method": "DELETE",
+      "path": "/api/aportes/{id}/",
+      "description": "Elimina un documento de aporte (solo por Administrador).",
+      "permissions": "Admin only"
+    }
+  },
+  "download_credits": {
+    "list_credits": {
+      "method": "GET",
+      "path": "/api/creditos/",
+      "description": "Lista todos los créditos de descarga.",
+      "permissions": "Admin only"
+    },
+    "retrieve_credit": {
+      "method": "GET",
+      "path": "/api/creditos/{id}/",
+      "description": "Obtiene los detalles de un crédito de descarga específico.",
+      "permissions": "Admin only (o propietario del crédito)"
+    }
+  },
+  "external_accesses": {
+    "list_external_accesses": {
+      "method": "GET",
+      "path": "/api/accesos-externos/",
+      "description": "Lista todos los registros de acceso externo.",
+      "permissions": "Admin only"
+    },
+    "retrieve_external_access": {
+      "method": "GET",
+      "path": "/api/accesos-externos/{id}/",
+      "description": "Obtiene los detalles de un registro de acceso externo específico.",
+      "permissions": "Admin only"
+    }
+  },
+  "calls": {
+    "list_calls": {
+      "method": "GET",
+      "path": "/api/convocatorias/",
+      "description": "Lista todas las convocatorias.",
+      "permissions": "AllowAny"
+    },
+    "create_call": {
+      "method": "POST",
+      "path": "/api/convocatorias/",
+      "description": "Crea una nueva convocatoria.",
+      "permissions": "Admin only"
+    },
+    "retrieve_call": {
+      "method": "GET",
+      "path": "/api/convocatorias/{id}/",
+      "description": "Obtiene los detalles de una convocatoria específica.",
+      "permissions": "AllowAny"
+    },
+    "update_call": {
+      "method": "PUT",
+      "path": "/api/convocatorias/{id}/",
+      "description": "Actualiza completamente una convocatoria existente.",
+      "permissions": "Admin only"
+    },
+    "partial_update_call": {
+      "method": "PATCH",
+      "path": "/api/convocatorias/{id}/",
+      "description": "Actualiza parcialmente una convocatoria existente.",
+      "permissions": "Admin only"
+    },
+    "delete_call": {
+      "method": "DELETE",
+      "path": "/api/convocatorias/{id}/",
+      "description": "Elimina una convocatoria.",
+      "permissions": "Admin only"
+    }
+  },
+  "call_history": {
+    "list_call_history": {
+      "method": "GET",
+      "path": "/api/convocatorias-historial/",
+      "description": "Lista el historial de estados de las convocatorias.",
+      "permissions": "Admin only"
+    },
+    "retrieve_call_history": {
+      "method": "GET",
+      "path": "/api/convocatorias-historial/{id}/",
+      "description": "Obtiene los detalles de un registro de historial de estado de convocatoria específico.",
+      "permissions": "Admin only"
+    }
+  },
+  "loan_requests": {
+    "list_loan_requests": {
+      "method": "GET",
+      "path": "/api/prestamos/",
+      "description": "Lista todas las solicitudes de préstamo.",
+      "permissions": "Authenticated"
+    },
+    "create_loan_request": {
+      "method": "POST",
+      "path": "/api/prestamos/",
+      "description": "Crea una nueva solicitud de préstamo.",
+      "permissions": "Authenticated (Usuario Interno)"
+    },
+    "retrieve_loan_request": {
+      "method": "GET",
+      "path": "/api/prestamos/{id}/",
+      "description": "Obtiene los detalles de una solicitud de préstamo específica.",
+      "permissions": "Authenticated (propio) / Admin only (otros)"
+    },
+    "update_loan_request": {
+      "method": "PUT",
+      "path": "/api/prestamos/{id}/",
+      "description": "Actualiza completamente una solicitud de préstamo existente (solo por Administrador).",
+      "permissions": "Admin only"
+    },
+    "partial_update_loan_request": {
+      "method": "PATCH",
+      "path": "/api/prestamos/{id}/",
+      "description": "Actualiza parcialmente una solicitud de préstamo existente (solo por Administrador).",
+      "permissions": "Admin only"
+    },
+    "delete_loan_request": {
+      "method": "DELETE",
+      "path": "/api/prestamos/{id}/",
+      "description": "Elimina una solicitud de préstamo (solo por Administrador).",
+      "permissions": "Admin only"
+    }
+  },
+  "notifications": {
+    "list_notifications": {
+      "method": "GET",
+      "path": "/api/notificaciones/",
+      "description": "Lista todas las notificaciones del usuario autenticado.",
+      "permissions": "Authenticated"
+    },
+    "retrieve_notification": {
+      "method": "GET",
+      "path": "/api/notificaciones/{id}/",
+      "description": "Obtiene los detalles de una notificación específica.",
+      "permissions": "Authenticated (destinatario) / Admin only (otros)"
+    },
+    "update_notification": {
+      "method": "PUT",
+      "path": "/api/notificaciones/{id}/",
+      "description": "Actualiza completamente una notificación existente (ej. marcar como leída).",
+      "permissions": "Authenticated (destinatario) / Admin only (otros)"
+    },
+    "partial_update_notification": {
+      "method": "PATCH",
+      "path": "/api/notificaciones/{id}/",
+      "description": "Actualiza parcialmente una notificación existente (ej. marcar como leída).",
+      "permissions": "Authenticated (destinatario) / Admin only (otros)"
+    }
+  },
+  "pdf_pages": {
+    "list_pdf_pages": {
+      "method": "GET",
+      "path": "/api/paginas-pdf/",
+      "description": "Lista las páginas de PDF (usualmente para la gestión interna de PDFs por el backend).",
+      "permissions": "Admin only"
+    },
+    "retrieve_pdf_page": {
+      "method": "GET",
+      "path": "/api/paginas-pdf/{id}/",
+      "description": "Obtiene los detalles de una página PDF específica.",
+      "permissions": "Admin only"
+    },
+    "serve_pdf_as_images": {
+      "method": "GET",
+      "path": "/api/documentos/{material_id}/paginas/",
+      "description": "Sirve páginas de un documento PDF como imágenes (probablemente para visualización de vista previa).",
+      "permissions": "AllowAny (con lógica interna para límites de páginas según usuario)"
+    }
+  }
+}
